@@ -1,0 +1,10 @@
+<form method="post" action="$portalPath/workflow">
+  <fieldset class="search">
+    <legend>Awaiting response...</legend>
+    <p><b>Current workflow step</b>: '$self.getFormData('currentStepLabel')'
+    <br/><b>Next workflow step</b>: '$self.getFormData('nextStepLabel')'</p>
+    <p>This item has been submitted for copyright clearance in DiReCt, but the Media repository has not yet received confirmation that the process has commenced.</p>
+    <p>If you have just submitted the item to the Media Repository this is entirely normal, please allow for up to one business day for the process to commence.</p>
+    <p>If you have any concerns that the process may have stalled, please contact the <a href="#">DiReCt administration staff</a> regarding this item.</p>
+  </fieldset>
+</form>

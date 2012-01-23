@@ -1,0 +1,16 @@
+#parse($page.getTemplate('results/item-variables.vm'))
+
+<div id="$id" class="$resultClass">
+  #if($is_admin)
+    #parse($page.getTemplate('results/admin-links.vm'))
+  #end
+
+  <div class="item-thumbnail">
+  #parse($page.getTemplate('results/item-body.vm'))
+  </div>
+  #parse($page.getTemplate('results/item-header.vm'))
+  #parse($page.getTemplate('results/item-actions.vm'))
+  #parse($page.getTemplate('results/item-footer.vm'))
+
+  <div class="clear"></div>
+</div>

@@ -1,0 +1,15 @@
+<div class="grid_4">
+  #set($menuTitle = "Actions")
+  #parse($page.getTemplate('wrapping/main-menu-open.vm'))
+  #set($menuTitle = $nullValue)
+  <ul class="menu">
+    <li><a href="$portalPath/search">Browse all</a></li>
+    #if($page.authentication.is_admin())
+    <li><a id="reharvest-view" href="#" rel="$portalId">Reharvest view...</a></li>
+    #end
+    #if($page.authentication.is_admin() || $page.authentication.has_role("STAFF") || $page.authentication.has_role("ALLSTAFF"))
+    <li><a href="$portalPath/upload">Upload a file</a></li>
+    #end
+  </ul>
+  #parse($page.getTemplate('wrapping/main-menu-close.vm'))
+</div>

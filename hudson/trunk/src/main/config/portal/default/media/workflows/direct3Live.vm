@@ -1,0 +1,10 @@
+<form method="post" action="$portalPath/workflow">
+  <fieldset class="search">
+    <legend>Pending DiReCt...</legend>
+    <p><b>Current workflow step</b>: '$self.getFormData('currentStepLabel')'
+    <br/><b>Next workflow step</b>: '$self.getFormData('nextStepLabel')'</p>
+    <p>This item is currently being processed for copyright clearance in DiReCt.</p>
+    <p><i>Some submission data? "Was submitted on X date..."</i></p>
+    <p>Please contact the <a href="#">DiReCt administration staff</a> regarding this item if you would like more information.</p>
+  </fieldset>
+</form>

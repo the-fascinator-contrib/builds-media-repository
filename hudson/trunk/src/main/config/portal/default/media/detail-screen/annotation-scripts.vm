@@ -1,0 +1,12 @@
+#parse($page.getTemplate('detail-screen/anotar/form-comments.html'))
+#parse($page.getTemplate('detail-screen/anotar/form-tags.html'))
+#parse($page.getTemplate('detail-screen/anotar/form-media.html'))
+
+#parse($page.getTemplate('detail-screen/anotar/js-tags.js'))
+#parse($page.getTemplate('detail-screen/anotar/js-media.js'))
+#parse($page.getTemplate('detail-screen/anotar/js-comments.js'))
+#parse($page.getTemplate('detail-screen/anotar/js-images.js'))
+    
+#if($page.authentication.is_admin())
+  #parse($page.getTemplate('dialogs/delete-annotation.vm'))
+#end

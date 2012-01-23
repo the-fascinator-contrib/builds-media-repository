@@ -1,0 +1,54 @@
+<div class="box hidden" id="login-form">
+  <h3>USQ Users:</h3>
+  #set($providers = $page.getSsoProviders())
+  #foreach($ssoId in $providers.keySet())
+  <form class="ssoLogin" method="post" action="#">
+    <fieldset class="search">
+      <legend>$providers.get($ssoId).get("label")</legend>
+      $providers.get($ssoId).get("interface")
+    </fieldset>
+  </form>
+  #end
+
+  <p>
+    <a id="media-login" href="#">Advanced</a>
+    <a id="media-login-off" href="#" class="hidden">Advanced (hide)</a>
+  </p>
+
+  <form id="login" method="post" class="hidden" action="#">
+    <fieldset class="search">
+      <legend>Login details</legend>
+      <div class="login-error hidden" id="login-error">
+        <img class="hidden" id="login-loading" src="$portalPath/images/icons/loading.gif" alt="Loading" />
+        <span id="login-message"></span>
+      </div>
+      <p><b>Please Note!<br/>USQ users should login via UConnect with the above link.</b></p>
+      <p>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" />
+      </p>
+      <p>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" />
+      </p>
+      <input id="login-submit" type="button" value="Login" />
+    </fieldset>
+  </form>
+
+  <p><input id="login-cancel" type="button" value="Close" /></p>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#media-login").click(function() {
+            $("#media-login").hide();
+            $("#media-login-off").show();
+            $("#login").show();
+        });
+        $("#media-login-off").click(function() {
+            $("#media-login").show();
+            $("#media-login-off").hide();
+            $("#login").hide();
+        });
+    });
+</script>

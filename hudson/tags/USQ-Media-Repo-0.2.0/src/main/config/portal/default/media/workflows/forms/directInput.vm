@@ -1,0 +1,279 @@
+#set($noLayout = true)
+#set($oid = $self.getFormData('oid'))
+#parseTemplate("workflows/forms/sections/navigation.vm")
+##
+<div class="widget-form" id="main-form"
+    data-save-url=""
+    data-save-func=""
+    data-submit-url="$portalPath/workflow.ajax?func=upload-direct"
+    data-submit-func="submitFunc"
+    data-submit-result-func="afterSubmit"
+    data-form-fields="course_code, course_year, course_semester, campus_mode,
+                        too_ext, too_onc, too_www, spr_ext, spr_onc, spr_www,
+                        fra_ext, fra_onc, fra_www, title, description, dc_location,
+                        dc_available, usq_credits, notes"
+    data-form-fields-readonly="oid, upload-file-workflow, targetStep, step, func"
+>
+  <input type="hidden" id="step" name="step" value="$self.getFormData('step')"/>
+  <input type="hidden" id="targetStep" name="targetStep" value="$self.getFormData('nextStep')"/>
+  <input type="hidden" id="oid" name="oid" value="$self.getFormData('oid')"/>
+  <input type="hidden" id="func" name="func" value="upload-direct"/>
+  <input type="hidden" id="upload-file-workflow" name="upload-file-workflow" value="$self.getFormData('upload-file-workflow')" />
+
+  <h1>DiReCt Copyright Management <span id="formTitle"> </span></h1>
+  <div class="inputscreens">
+
+## Upload
+## only show upload tab when uploading new objects
+#if(!$self.getObject())
+    <h3><a href="#screen1">Upload</a></h3>
+    <div id="screen1" class="inputscreen">
+        <label for="upload-file-file">Select File (*):</label>
+        <input type="file" id="upload-file-file" name="upload-file-file" size="40" />
+        <label class="validation-err-msg" style="color:red"
+            data-validation-rule="test(notEmpty);when(onBlur,onChange,onSubmit);name(fileTest);"
+            for="upload-file-file">A file is required!</label>
+        #nav(false, true)
+   </div>
+#end
+##
+## Required Fields
+##
+    <h3><a href="#screen2">Required Fields</a></h3>
+    <div id="screen2" class="inputscreen">
+      <h2><label for="course_code">Course Code (*)</label></h2>
+      <p>
+        <input type="text" id="course_code" size="20" placeholder="The course code" autofocus />
+        <label class="validation-err-msg" style="color: red;" 
+            data-validation-rule="test(notEmpty);when(onBlur,onChange,onSubmit);"
+            for="course_code">A course code is required!</label>
+      </p>
+      ##
+      <h2><label for="course_year">Year (*)</label></h2>
+      <p>
+        <input type="text" id="course_year" size="20" />
+        <label class="validation-err-msg" style="color: red;"
+            data-validation-rule="test(notEmpty);when(onBlur,onChange,onSubmit);"
+            for="course_year">A year is required!</label>
+      </p>
+      ##
+      <h2><label for="course_semester">Semester (*)</label></h2>
+      <p>
+        <input type="text" id="course_semester" size="20" />
+        <label class="validation-err-msg" style="color: red;"
+            data-validation-rule="test(notEmpty);when(onBlur,onChange,onSubmit);"
+            for="course_semester">A semester is required!</label>
+      </p>
+      ##      <h2><label for="campus_mode">Student Groups</label></h2>
+      <fieldset style="margin-top:2em;">
+        <legend style="font-weight:bold;">Student Groups</legend>
+        <select id="campus_mode" style="width:20ex;">
+            <option value="all_students">All students</option>
+            <option value="seleted_students">Let me pick</option>
+        </select>
+        <table id="campus_mode_table">
+          <tbody>
+            <tr>
+                <th> </th>
+                <th>External</th>
+                <th>On-Campus</th>
+                <th>On-Line</th>
+            </tr>
+            <tr>
+                <th>Toowoomba</th>
+                <td><input id="too_ext" type="checkbox" checked="checked"/></td>
+                <td><input id="too_onc" type="checkbox" checked="checked"/></td>
+                <td><input id="too_www" type="checkbox" checked="checked"/></td>
+            </tr>
+            <tr>
+                <th>Springfield</th>
+                <td><input id="spr_ext" type="checkbox" checked="checked"/></td>
+                <td><input id="spr_onc" type="checkbox" checked="checked"/></td>
+                <td><input id="spr_www" type="checkbox" checked="checked"/></td>
+            </tr>
+            <tr>
+                <th>Fraser Coast</th>
+                <td><input id="fra_ext" type="checkbox" checked="checked"/></td>
+                <td><input id="fra_onc" type="checkbox" checked="checked"/></td>
+                <td><input id="fra_www" type="checkbox" checked="checked"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+
+      #if($self.getObject())
+        #nav(false, true)
+      #else
+        #nav(true, true)
+      #end
+    </div>
+##
+## Optional Fields
+##
+    <h3><a href="#screen3">Optional Fields</a></h3>
+    <div id="screen3" class="inputscreen">
+      <h2><label for="title">Title</label></h2>
+      <p>
+        <input type="text" id="title" size="80" placeholder="The Title of the content" />
+      </p>
+      <h2><label for="description">Description</label></h2>
+      <p>
+        <input type="text" id="description" size="80" placeholder="Description of the content" />
+      </p>
+      <h2><label for="dc_location">Location</label></h2>
+      <p>
+        <input type="text" id="dc_location" size="80" />
+      </p>
+      <h2><label for="dc_available">Broadcast Date</label></h2>
+      <p>
+        <input type="text" id="dc_available" name="dc_available" size="20" class="dateYMD" />
+      </p>
+      <h2><label for="usq_credits">Special Credits</label></h2>
+      <p>
+        <textarea id="usq_credits" cols="60" />
+      </p>
+      <h2><label for="notes">Notes</label></h2>
+      <p>
+        <textarea id="notes" cols="60" />
+      </p>
+      #nav(true, true)
+    </div>
+##
+## Submit
+##
+    <h3><a href="#screen4">Submit</a></h3>
+    <div id="screen4" class="inputscreen">
+        <p>Current step: <strong>$self.getFormData("currentStepLabel")</strong>
+        <br/>
+        #if ($self.getFormData("step") != $self.getFormData("nextStep"))
+          Next step: <strong>$self.getFormData("nextStepLabel")</strong>
+        #end
+        <div style="color:red; padding:1em;" id="validation-summary">
+            <div id="not-valid-for-submitting"  class="validation-err-msg"
+                    style="display:none;color:darkred;">
+                You must fixup all fields with missing required data or invalid data before
+                you can submit!
+            </div>
+            <div>
+                <label class="validation-err-msg" style="cursor:pointer;"
+                    for="upload-file-file">A file is required!</label>
+            </div>
+            <div>
+                <label class="validation-err-msg" style="cursor:pointer;"
+                    for="course_code">A course code is required!</label>
+            </div>
+            <div>
+                <label class="validation-err-msg" style="cursor:pointer;"
+                    for="course_year">A year is required!</label>
+            </div>
+            <div>
+                <label class="validation-err-msg" style="cursor:pointer;"
+                    for="course_semester">A semester is required!</label>
+            </div>
+        </div>
+        <div style="margin:2em 1em 1em 2em; text-align: right;">
+            To submit this item to the DiReCt system for copyright clearance
+            <input type="button" class="form-fields-submit" value="Submit" />
+            <div>
+                <div id="uploading-progress" style="display:none;float:right;">
+                    <img src="$portalPath/images/loading-progress.gif" alt="uploading"/>
+                </div>
+                <span class="submit-result" style="padding-left:2em;font-size:120%;">
+                </span>
+            </div>
+        </div>
+        #nav(true, false)
+    </div>
+##
+  </div>
+</div>
+
+<script type="text/javascript">
+  var jQ=$;
+  var validator, afterSubmit, submitFunc;
+  submitFunc = function(widgetForm, data){
+    jQ("#uploading-progress").show();
+    jQ(".form-fields-submit").attr("disabled", true);
+  };
+  afterSubmit = function(widgetForm, data){
+    var test, retries=2;
+    test=function(){
+        jQ.getJSON("direct", {isIndexed:data.oid},
+            function(j){
+                if(j.isIndexed){
+                    //window.location.href = "$portalPath/detail/" + data.oid + "/";
+                    window.location.href = "$portalPath/home";
+                }else{
+                    // try again in a second
+                    while(retries){
+                        retries-=1;
+                        setTimeout(test, 1000);
+                    }
+                }
+            }
+        );
+    };
+    if(data.oid){
+        test();
+        //window.location.href = "$portalPath/home";
+    }
+  };
+  jQ(function(){
+    var campusMode=jQ("#campus_mode");
+    setTimeout(function(){
+        validator=widgets.forms[0].validator;
+    }, 100);
+    campusMode.change(function(){
+        if(campusMode.val()==="seleted_students"){
+            jQ("#campus_mode_table").show();
+        }else{
+            jQ("#campus_mode_table").hide().find("input[type=checkbox]").attr("checked", true);
+        }
+    });
+    campusMode.change();
+
+    $("#validation-summary label").click(function(){
+        var i, id;
+        try{
+            i=$(this);
+            id=i.attr("for");
+            i=$("*[id="+id+"]");
+            id=i.parents(".ui-tabs-panel").attr("id");
+            $("a[href=#"+id+"]").click();
+            i.focus();
+        }catch(e){
+        }
+        return false;
+    });
+    try{
+        var vTimer=null;
+        function onValidation(r){
+            function cb(){
+                vTimer=null;
+                if($("#validation-summary label:visible").size()==0){
+                    $("#not-valid-for-submitting").hide();
+                }
+            }
+            if(!vTimer) vTimer=setTimeout(cb, 200);
+        }
+        setTimeout(function(){widgets.forms[0].validator.onValidationListeners.push(onValidation);},
+                500);
+    }catch(e){}
+
+//        $("#agreement").click(function() {
+//            $("#not-valid-for-submitting").hide();
+//            if ($(this).is(":checked")) {
+//                if(widgets.forms[0].validator.isOkToSubmit()==false){
+//                    $(this).attr("checked", false);
+//                    $("#not-valid-for-submitting").show();
+//                }else{
+//                    $("#update-package").removeAttr("disabled");
+//                }
+//            } else {
+//                $("#update-package").attr("disabled", "disabled");
+//            }
+//        });
+  });
+
+
+</script>

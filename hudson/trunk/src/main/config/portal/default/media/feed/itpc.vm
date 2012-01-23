@@ -1,0 +1,72 @@
+#set($noLayout = true)
+#set($portal = $self.portal)
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<channel>
+    <title>$portal.description</title>
+    <link>$self.baseUrl$portal.name</link>
+    <language>en-us</language>
+    <copyright>University of Southern Queensland</copyright>
+    
+    <itunes:subtitle></itunes:subtitle>
+    <itunes:author>USQ Media Repository</itunes:author>
+    <itunes:summary>This podcast is created using USQ Media Repository</itunes:summary>
+    <description>This podcast is created using USQ Media Repository</description>
+    
+    <itunes:owner>
+        <itunes:name></itunes:name>
+        <itunes:email></itunes:email>
+    </itunes:owner>
+    
+    ##<itunes:image href="http://example.com/podcasts/everything/AllAboutEverything.jpg" />
+    
+    <itunes:category text="Learning and Teaching"/>
+    <itunes:category text="$portal.description"/>
+    
+    #if($self.hasResults()>0)
+        #foreach($item in $self.result.getResults())
+            ## Only mp3/mp4 or it's kind can work...
+            #set($preview = $item.get("preview"))
+            #set($supported = $self.checkItunesSupported([$preview]))
+            #if($supported == "")
+                #set($altpreview = $item.getList("altpreview"))
+                #set($supported = $self.checkItunesSupported($altpreview))
+            #end
+            
+            #if($supported)
+                #set($oid = $item.get("id"))
+                #if($item.get("dc_title"))
+                    #set($title = $self.cleanUp($item.get("dc_title")))
+                #else
+                    #set($title = $self.cleanUp($self.getFileName($oid)))
+                #end
+                
+                <item>
+                    <title>$title</title>
+                    <itunes:author>USQ Media Repository</itunes:author>
+                    #set($description="")
+                    #if($item.get("dc_description"))
+                        #set($description = $self.cleanUp($item.get("dc_description")))
+                    #end
+                    <itunes:summary>$description</itunes:summary>
+                    #if($item.get("thumbnail")) 
+                        <itunes:image>$self.baseUrl$portal.name/detail/$oid/$item.get("thumbnail")</itunes:image>
+                    #end
+                    
+                    #set($url="$self.baseUrl$portal.name/detail/$oid/$supported")
+                    <enclosure url="$url" />
+                    <guid>$url</guid>
+                    <pubDate>$item.get("last_modified")</pubDate>
+                    
+                    <itunes:duration>$self.convertDuration($item.get("dc_duration"))</itunes:duration>
+                    
+                    #set($subjectStr = $self.getString($item.getList("dc_subject")))
+                    <itunes:keywords>$subjectStr</itunes:keywords>
+                </item>
+            #end
+        #end
+    #else
+    <title>No public item available</title>
+    #end
+</channel>
+</rss>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>au.edu.usq.fascinator.media.relay</groupId>
+    <artifactId>fascinator-media-relay</artifactId>
+    <version>0.2.0</version>
+    <packaging>jar</packaging>
+    <name>USQ Media Repository - Relay Harvester</name>
+    <parent>
+        <groupId>au.edu.usq.fascinator.media</groupId>
+        <artifactId>fascinator-media-repository</artifactId>
+        <version>0.2.0</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+    <dependencies>
+        <!-- Fascinator -->
+        <dependency>
+            <groupId>au.edu.usq.fascinator</groupId>
+            <artifactId>fascinator-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>au.edu.usq.fascinator</groupId>
+            <artifactId>fascinator-plugin-api</artifactId>
+        </dependency>
+        <!-- External -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
+    </dependencies>
+</project>

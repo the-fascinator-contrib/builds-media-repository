@@ -1,0 +1,64 @@
+{
+    "harvester": {
+        "type": "workflow-harvester",
+        "workflow-harvester": {
+            "force-storage": "true"
+        }
+    },
+
+    "transformer": {
+        "harvestQueue": ["aperture"],
+        "indexOnHarvest": "true",
+        "renderQueue": ["ffmpeg", "ims"]
+    },
+
+    "indexer": {
+        "script": {
+            "type": "python",
+            "rules": "direct-files.py"
+        },
+        "params": {
+            "repository.name": "DiReCt",
+            "repository.type": "Uploaded Files",
+            "workflow_field": "workflowStep"
+        }
+    },
+
+    "stages": [
+        {
+            "name": "pending",
+            "label": "Pending",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"]
+        },
+        {
+            "name": "toDirect",
+            "label": "DiReCt Submission",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"],
+            "template": "workflows/1-direct-submit",
+            "message": ["direct"]
+        },
+        {
+            "name": "direct",
+            "label": "In DiReCt",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"],
+            "template": "workflows/2-direct-pending"
+        },
+        {
+            "name": "live",
+            "label": "Live",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"],
+            "template": "workflows/3-direct-live"
+        },
+        {
+            "name": "archive",
+            "label": "Archived",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"],
+            "template": "workflows/4-direct-archived"
+        }
+    ]
+}

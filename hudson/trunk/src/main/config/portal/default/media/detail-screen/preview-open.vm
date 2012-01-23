@@ -1,0 +1,12 @@
+<div id="preview" class="box articles">
+  <div class="article-heading">$title</div>
+  <div id="anno-root" class="content-preview">
+    <div class="first article">
+      #************************
+      * Anotar GUIs
+      ************************#
+      #if(!($isPackage || $isImsPackage))
+      <div class="preview-tags" rel="${oid}-tags">
+        <div class="object-tag-list">Tags: <span class="object-tags"></span></div>
+      </div>
+      #end

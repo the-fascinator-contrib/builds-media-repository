@@ -1,0 +1,31 @@
+#set($pageTitle = "Upload Workflows")
+<h2 id="page-heading">$pageTitle</h2>
+<div id="form-section" class="grid_16">
+  <div class="box" id="workflow-form">
+    #if ($self.uploaders.isEmpty())
+        Sorry, but your current security permissions don't allow for file uploading.
+    #else
+        <fieldset class='login'>
+            <legend>Please select the workflow for uploading files</legend>
+            <ul>
+        #foreach($id in $self.uploaders.keySet())
+            <li>
+            #set($uploader = $self.uploaders.get($id))
+            #set($screenLabel = $uploader.getString("", "screen-label"))
+            #set($uploadTemplate = $uploader.getString("", "upload-template"))
+            #set($stageInfo = $self.getStageInfo($id))
+            <form action="$portalPath/$uploadTemplate" method="post">
+                <input type="submit" value="$screenLabel" class="upload-workflow" />
+                <input type="hidden" name="upload-file-workflow" value="$id" />
+                <input type="hidden" name="currentStep" value="$stageInfo.first" />
+                <input type="hidden" name="currentStepLabel" value="$stageInfo.firstLabel" />
+                <input type="hidden" name="nextStep" value="$stageInfo.next" />
+                <input type="hidden" name="nextStepLabel" value="$stageInfo.nextLabel" />
+            </form>
+            </li>
+        #end
+            </ul>
+        </fieldset>
+     #end
+  </div>
+</div>

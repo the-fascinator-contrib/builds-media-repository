@@ -1,0 +1,34 @@
+<div class="menubar">
+    <ul>
+        <li><a href="$portalPath/home">Home</a></li>
+        <li><a href="$portalPath/search">Browse</a></li>
+        #if($page.authentication.is_admin())
+        <li>
+            <a href="#">Admin</a>
+            <ul class="dropdown">
+                <li><a href="$portalPath/settings">Settings</a></li>
+                <li><a href="$portalPath/admin">Security</a></li>
+                #parseTemplate("elements/queues.vm")
+            </ul>
+        </li>
+        #end
+        <li class="secondary">
+            #if($page.authentication.is_logged_in())
+                <span id="user-info" class="status">Welcome $page.authentication.get_name(), <a href="#" id="logout-now">Logout</a></span>
+            #else
+                <span id="user-info" class="status"><a class="login-now" href="#">Login</a></span>
+            #end
+        </li>
+        $!navContent
+    </ul>
+    <div class="clear"></div>
+</div>
+
+#if($pageName=="home")
+<div class="mainbanner mainbannerimage">
+  <div class="mainbannerleft mainbannerimageleft">
+    <div class="mainbannerright mainbannerimageright">
+    </div>
+  </div>
+</div>
+#end

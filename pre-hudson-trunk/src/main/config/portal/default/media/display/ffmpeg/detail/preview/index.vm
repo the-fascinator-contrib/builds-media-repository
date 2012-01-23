@@ -1,0 +1,88 @@
+### Display a link to a video player
+#macro(displayVideoBlock $pid $link $message $self)
+    #set($format = $self.getFFmpegData($pid, "format"))
+    #set($codec = $self.getFFmpegData($pid, "codec"))
+    #set($width = $self.getFFmpegData($pid, "width"))
+    #set($height = $self.getFFmpegData($pid, "height"))
+    #set($size = $self.getFFmpegData($pid, "size"))
+    #set($size = $self.niceSize($size))
+
+    <a href="$link">
+        <img alt='$message' src='$portalPath/images/play_overlay.png'/>
+    </a>
+    <b>Resolution</b>: $width x $height<br/>
+    #if ($codec == "")
+    <b>Format</b>: $format<br/>
+    #else
+    <b>Format</b>: $format ($codec)<br/>
+    #end
+    <b>Size</b>: $size<br/>
+#end
+
+
+### Display an empty player slot for missing payloads
+#macro(displayEmptyBlock)
+    N/A
+#end
+
+
+#set($validFFmpeg = $self.parseFFmpeg($parent))
+#if($parent.isDetail())
+    #set($outputs = $self.getTranscodings())
+
+    <table id="ffmpeg-display">
+        <tbody>
+            <tr>
+                <th>Flash</th>
+                <th>MP4</th>
+            </tr>
+            <tr>
+                <td>
+    ###################################
+    ## FLV - Low Res
+    ###################################
+    #if ($outputs.contains("preview.flv"))
+        #displayVideoBlock("preview.flv", "$portalPath/detail/$oid/preview.flv?download=false", "Play Flash Video", $self)
+    #else
+        #displayEmptyBlock()
+    #end
+                </td>
+                <td>
+    ###################################
+    ## MP4 - Low Res (iPhone)
+    ###################################
+    #if ($outputs.contains("preview.mp4"))
+        #displayVideoBlock("preview.mp4", "$portalPath/detail/$oid/preview.mp4?download=false", "Play MP4", $self)
+    #else
+        #displayEmptyBlock()
+    #end
+                </td>
+            </tr>
+            <tr>
+                <td>
+    ###################################
+    ## FLV - High Res
+    ###################################
+    #if ($outputs.contains("hiRes.flv"))
+        #displayVideoBlock("hiRes.flv", "$portalPath/detail/$oid/hiRes.flv?download=false", "Play High Resolution Flash Video", $self)
+    #else
+        #displayEmptyBlock()
+    #end
+                </td>
+                <td>
+    ###################################
+    ## MP4 - High Res (iPad)
+    ###################################
+    #if ($outputs.contains("hiRes.mp4"))
+        #displayVideoBlock("hiRes.mp4", "$portalPath/detail/$oid/hiRes.mp4?download=false", "Play High Resolution MP4", $self)
+    #else
+        #displayEmptyBlock()
+    #end
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    #if ($outputs.contains("audio.mp3"))
+        <a class="audio" href="$portalPath/detail/$oid/audio.mp3?download=false">MP3 Audio Version</a>
+    #end
+#end

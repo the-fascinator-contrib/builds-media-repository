@@ -1,0 +1,188 @@
+.availableCourses {
+    display: inline;
+    float: left;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+.container_16 .grid_16 {
+    margin-top: 10px;
+}
+.whatsnew ul.menu {
+  border: 0px;
+  margin-bottom: 0px;
+}
+.mainmenu li {
+  background-position: 5px 50%;
+}
+div#metadata {
+  padding: 2px 5px;
+}
+div#metadata .block {
+  padding: 0px;
+}
+div#metadata table {
+  margin: 5px 0px;
+  border: 1px solid #BBBBBB;
+}
+.media-footer span.paging {
+  font-size: 23px;
+  margin: 10px 10px;
+}
+.menu li .article {
+  border: 0px;
+}
+#result-list .content h2, #preview .article-heading {
+  margin: 0px;
+  background-color: #FFF5D2;
+  border: 1px solid #BBBBBB;
+  padding: 5px 10px;
+  font-size: 150%;
+}
+#result-list .content .no-result {
+  background-color: transparent;
+  font-size: 150%;
+}
+#result-list .article {
+  padding: 5px 10px;
+}
+#result-list .article h3 {
+  margin-top: 3px;
+}
+.whatsnew-heading h2 {
+  color: #000000;
+  font-size: 125%;
+}
+#preview {
+  background-color: transparent;
+}
+.preview-tags {
+  padding: 5px;
+  background-color: #EEEEEE;
+  border: 1px solid #CCCCCC;
+  margin-bottom: 10px;
+}
+.preview-tags img {
+  vertical-align: text-bottom;
+}
+.preview-tags .float-right {
+  padding: 0px;
+}
+#preview #content .anno-command {
+  padding: 1px 5px;
+  background-color: #FFEECC;
+  white-space:nowrap;
+  cursor: pointer;
+  font-size: 12px;
+}
+#preview #content .anno-command img {
+  vertical-align: middle;
+}
+.moodleCourses h3 {
+  font-size: 125%;
+  border-bottom: 2px solid black;
+  background-color: #CCCCCC;
+  padding: 4px 10px;
+  margin: 0px 0px 15px;
+}
+.moodleCourses .column {
+  padding: 7px;
+}
+.moodleCourses #moodleOrphans {
+  margin-bottom: 15px;
+}
+.grid_12 .box h2 {
+    background-color: #FFF5D2;
+    border: 1px solid #BBBBBB;
+    color: black;
+    font-style: normal;
+    padding: 5px 10px;
+}
+#ffmpeg-display {
+    margin-bottom: 10px;
+}
+#ffmpeg-display td {
+    background-color: transparent;
+    border: 1px solid #EEEEEE;
+    padding: 10px 15px;
+}
+#ffmpeg-display th {
+    background-color: transparent;
+    border: 1px solid #EEEEEE;
+    text-align: center;
+}
+#ffmpeg-display td a {
+    float: left;
+    margin-right: 10px;
+}
+#ffmpeg-display td.faded {
+    background-color: #EEEEEE;
+    color: #999999;
+}
+#ffmpeg-display td.faded * {
+    opacity: 0.5;
+}
+.content-preview td {
+    background-color: transparent;
+    border: 0px;
+}
+.staffLinks th {
+    border: 1px solid #CCCCCC;
+    background-color: transparent;
+}
+.staffLinks td {
+    border: 1px solid #CCCCCC;
+    background-color: transparent;
+    padding: 5px 5px 5px 40px;
+}
+.staffLinks textarea {
+    width: 500px;
+    height: 50px;
+}
+.staffLinks .clipboard img {
+    vertical-align: text-bottom;
+}
+.staffLinks .clipboard {
+    font-size: 80%;
+}
+.left {
+    float: left;
+}
+#player-container {
+    padding: 5px;
+}
+.mediaAnnotations {
+    padding: 2px 10px;
+}
+.staffLinks .alt th, .staffLinks .alt td {
+    border: 1px solid #CCCCCC;
+    background-color: #EEEEEE;
+}
+.video-link a, .video-link a:hover {
+    text-decoration: none;
+}
+a.audio {
+    background-image: url('../images/icons/music.png');
+    background-position: 0 50%;
+    background-repeat: no-repeat;
+    padding: 0.5em 0.5em 0.5em 20px;
+}
+.upload-workflow {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: bold;
+    padding: 2px;
+}
+.upload-workflow:hover {
+    text-decoration: underline;
+}
+.inputscreen h2 {
+    background: none;
+    color: black;
+    text-transform: none;
+}
+table.input-list td {
+    border: none;
+}

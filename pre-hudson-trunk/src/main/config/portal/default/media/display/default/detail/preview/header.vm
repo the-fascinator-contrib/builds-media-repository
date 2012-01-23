@@ -1,0 +1,5 @@
+#set($contentId = $oid)
+#set($contentTitle = "Select")
+#parseTemplate("wrapping/content-block-open.vm")
+<div class="article first" id="content">
+    #parseDisplayTemplate("detail/preview/content-header.vm")

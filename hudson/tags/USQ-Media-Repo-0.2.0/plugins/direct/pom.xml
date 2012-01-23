@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>au.edu.usq.fascinator.media.direct</groupId>
+    <artifactId>fascinator-media-direct</artifactId>
+    <version>0.2.0</version>
+    <packaging>jar</packaging>
+    <name>USQ Media Repository - DiReCt APIs</name>
+    <parent>
+        <groupId>au.edu.usq.fascinator.media</groupId>
+        <artifactId>fascinator-media-repository</artifactId>
+        <version>0.2.0</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+    <dependencies>
+        <!-- Fascinator -->
+        <dependency>
+            <groupId>au.edu.usq.fascinator</groupId>
+            <artifactId>fascinator-core</artifactId>
+        </dependency>
+        <!-- Fascinator Plugins -->
+        <dependency>
+            <groupId>au.edu.usq.fascinator.plugins</groupId>
+            <artifactId>plugin-indexer-solr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>au.edu.usq.fascinator.plugins</groupId>
+            <artifactId>plugin-storage-filesystem</artifactId>
+        </dependency>
+    </dependencies>
+</project>

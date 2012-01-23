@@ -1,0 +1,443 @@
+#set($noLayout = true)
+#set($oid = $self.getFormData('oid'))
+#parseTemplate("workflows/forms/sections/navigation.vm")
+##
+<div class="widget-form" id="main-form"
+    data-save-url=""
+    data-save-func=""
+    data-submit-url="$portalPath/workflow.ajax?func=upload"
+    data-submit-func="submitFunc"
+    data-submit-result-func="afterSubmit"
+    data-form-fields="title, description, dc_subject.0, moodleSecurity,
+                        psMoodle, targetStep"
+    data-form-fields-readonly="oid, upload-file-workflow"
+>
+
+    <input type="hidden" id="step" name="step" value="$self.getFormData('step')"/>
+    <input type="hidden" id="targetStep" name="targetStep" value="$self.getFormData('nextStep')"/>
+    <input type="hidden" id="oid" name="oid" value="$self.getFormData('oid')"/>
+    <input type="hidden" id="upload-file-workflow" name="upload-file-workflow" value="$self.getFormData('upload-file-workflow')" />
+
+    <h1>USQ Copyright Materials<span id="formTitle"></span></h1>
+    <div class="inputscreens">
+        ## Upload
+        ## only show upload tab when uploading new objects
+        #if(!$self.getObject())
+            <h3><a href="#screen1">Upload</a></h3>
+            <div id="screen1" class="inputscreen">
+                <label for="upload-file-file">Select File (*):</label>
+                <input type="file" id="upload-file-file" name="upload-file-file" size="40" />
+                <label class="validation-err-msg" style="color:red"
+                    data-validation-rule="test(notEmpty);when(onBlur,onChange,onSubmit);name(fileTest);"
+                    for="upload-file-file">A file is required!</label>
+                #nav(false, true)
+           </div>
+        #end
+        
+        <h3><a href="#screen2">Description</a></h3>
+        <div id="screen2" class="inputscreen">
+            <h2><label for="title">Title (*)</label></h2>
+            <p>
+              <input type="text" id="title" size="80" placeholder="The title" autofocus />
+              <label class="validation-err-msg" style="color: red;" 
+                data-validation-rule="test(notEmpty);when(onBlur,onChange,onSubmit);"
+                for="title">A title is required!</label>
+            </p>
+            ##
+            <h2><label for="description">Description</label></h2>
+            <p>
+              <input type="text" id="description" size="80" placeholder="Description of the content" />
+            </p>
+            ##
+            <h2><label for="dc_subject">Keywords</label></h2>
+            <table class="input-list">
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td><input type="button" class="add-another-item" value="Add keyword" /></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+              <tbody>
+                <tr class="item-input-display sortable-item">
+                  <td class="sort-number"></td>
+                  <td><input type="text" size="40" placeholder="enter keyword here" id="dc_subject.0" /></td>
+                  <td class="delete-item"><a href="#">delete</a></td>
+                  <td style="width: 100%;" />
+                </tr>
+              </tbody>
+            </table>
+    
+            #if($self.getObject())
+              #nav(false, true)
+            #else
+              #nav(true, true)
+            #end
+        </div>
+        
+        <h3><a href="#screen3">Manage Access</a></h3>
+        <div id="screen3" class="inputscreen">
+            <h3>Courses currently assigned:</h3>
+            <input type="hidden" name="moodleSecurity" id="moodleSecurity" value="$self.getFormData('moodleSecurity')" />
+            <input type="hidden" name="psMoodle" id="psMoodle" value="$self.getFormData('psMoodle')" />
+            <ul id="moodleCosmetic">
+              <li>This object is not currently assigned to any courses.</li>
+            </ul>
+        
+            #set($username = $self.getUser())
+            #set($owner = $self.getOwner())
+            
+            <fieldset class="availableCourses">
+                <legend>Available courses</legend>
+                #set($data = $self.queryMoodle([$username, $owner]))
+                
+                ## Process normal course
+                #foreach($code in $self.codeList)
+                    #foreach($year in $self.yearList)
+                        #foreach($semester in $self.semesterList)
+                            #if ($data.has_key("$code $year $semester"))
+                                #set($courseDetail = $data.get("$code $year $semester"))
+                                #set($id = $courseDetail.get("id"))
+                                #set($name = $courseDetail.get("name"))
+                                #set($psdata = $courseDetail.get("psData"))
+                                #set($psdisplay = "<b>$code</b> $year S$semester, ")
+                                <input type="checkbox" class="moodleCheckbox moodleCB$id" data-id="$id" data-ps="$psdata" name="$name"/> $psdisplay$name<br/>
+                            #end
+                        #end
+                    #end
+                #end
+                
+                ## Process other list
+                #foreach($other in $self.otherList)
+                    #if ($data.has_key($other))
+                        #set($courseDetail = $data.get($other))
+                        #set($id = $courseDetail.get("id"))
+                        #set($name = $courseDetail.get("name"))
+                        #set($psdata = "")
+                        #set($psdisplay = "")
+                        <input type="checkbox" class="moodleCheckbox moodleCB$id" data-id="$id" data-ps="$psdata" name="$name" /> $psdisplay$name<br/>
+                    #end
+                #end
+            </fieldset>
+            
+            <div id="moodleOrphans" class="hidden">
+                <fieldset>
+                    <legend>Other Courses</legend>
+                    <p>Other user's courses making use of this object</p>
+                    <div id="moodleOrphanList"></div>
+                </fieldset>
+            </div>
+            
+            <fieldset class="availableCourses">
+                <legend>Custom Access</legend>
+                <p>Using the search box below you can search for courses based <br/>on the UConnect name of lecturers/staff/students.</p>
+                <input type="text" id="searchBox" /> <input type="button" id="searchButton" value="Search"/>
+                <div class="hidden" id="loadingImage"><img src="$portalPath/images/loading-progress.gif" /></div>
+                <br/><br/>
+                <div id="searchResultList"></div>
+            </fieldset>
+                    
+            #nav(true true)
+        </div>
+        
+        <h3><a href="#screen4">Submit</a></h3>
+        <div id="screen4" class="inputscreen">
+            <p>Current step: <strong>$self.getFormData("currentStepLabel")</strong>
+            <br/>
+            #if ($self.getFormData("step") != $self.getFormData("nextStep"))
+              Next step: <strong>$self.getFormData("nextStepLabel")</strong>
+            #end
+            <div style="color:red; padding:1em;" id="validation-summary">
+                <div id="not-valid-for-submitting"  class="validation-err-msg"
+                        style="display:none;color:darkred;">
+                    You must fixup all fields with missing required data or invalid data before
+                    you can submit!
+                </div>
+                <div>
+                    <label class="validation-err-msg" style="cursor:pointer;"
+                        for="upload-file-file">A file is required!</label>
+                </div>
+                <div>
+                    <label class="validation-err-msg" style="cursor:pointer;"
+                        for="title">A title is required!</label>
+                </div>
+            </div>
+            <div style="margin:2em 1em 1em 2em; text-align: right;">
+                Submit this object
+                <input type="button" class="form-fields-submit" value="Submit" />
+                <div>
+                    <div id="uploading-progress" style="display:none;float:right;">
+                        <img src="$portalPath/images/loading-progress.gif" alt="uploading"/>
+                    </div>
+                    <span class="submit-result" style="padding-left:2em;font-size:120%;">
+                    </span>
+                </div>
+            </div>
+            #nav(true, false)
+        </div>
+        
+    </div>
+</div>
+
+
+<script type="text/javascript">
+$(function() {
+    // Initialize the form
+    formInit();
+    function formInit() {
+        var ids = $("#moodleSecurity").val();
+        var idList = ids.split(",");
+        var len = idList.length;
+        var orphans = 0;
+        for (var i = 0; i < len; i++) {
+            if (idList[i] != "") {
+                var checkBoxes = $(".moodleCB" + idList[i]);
+                if (checkBoxes.length == 0) {
+                    // Look up orphans
+                    orphans++;
+                    addCourse($("#moodleOrphanList"), idList[i]);
+                } else {
+                    $(".moodleCB" + idList[i]).click();
+                }
+            }
+            sleep(0.5);
+        }
+        /*
+        $("#oid").val(packageData.oid);
+        
+        if (packageData.oid != '') {
+            $("#step").val(packageData.metaData.step);
+            $("#currentStep").text(packageData.metaData.label);
+            $(".upload").hide();
+        } else {
+            $(".workflowStatus").hide();
+        }
+        */
+        /*
+        $(":checkbox").each(function(){
+            var courseId = $(this).attr("data-id");
+            moodleSecurity = packageData.metaData.formData.moodleSecurity;
+            arr = moodleSecurity.split(",");
+            for (var i=0; i<arr.length; i ++) {
+                if (arr[i] == courseId)
+                    $(this).attr("checked", true);
+            }
+        });
+        */
+        syncMoodle($);
+    }
+    
+    $("#validation-summary label").click(function(){
+        var i, id;
+        try{
+            i=$(this);
+            id=i.attr("for");
+            i=$("*[id="+id+"]");
+            id=i.parents(".ui-tabs-panel").attr("id");
+            $("a[href=#"+id+"]").click();
+            i.focus();
+        }catch(e){
+        }
+        return false;
+    });
+    try{
+        var vTimer=null;
+        function onValidation(r){
+            function cb(){
+                vTimer=null;
+                if($("#validation-summary label:visible").size()==0){
+                    $("#not-valid-for-submitting").hide();
+                }
+            }
+            if(!vTimer) vTimer=setTimeout(cb, 200);
+        }
+        setTimeout(function(){widgets.forms[0].validator.onValidationListeners.push(onValidation);},
+                500);
+    }catch(e){}
+
+    // Sync form data to checkboxes
+    function syncMoodle(jQ) {
+        // Filter the list to unique IDs and Names
+        var arr = []
+        var names = []
+        var psValues = []
+        $(".moodleCheckbox:checked").each(function(index){
+            var courseId = $(this).attr("data-id");
+            var psData = $(this).attr("data-ps");
+            var courseName = $(this).attr("name");
+            if (jQ.inArray(courseId, arr) == -1 && courseId != "$self.getFormData('moodleSecurity')") {
+                arr.push(courseId);
+                psValues.push(psData);
+                names.push(courseName);
+            }
+        });
+
+        // Purge the existing data from the form
+        $("#moodleSecurity").val("");
+        $("#psMoodle").val("");
+        $("#moodleCosmetic li").remove();
+
+        // Build our new data
+        var len = arr.length;
+        var idString = "";
+        var nameString = "";
+        var psString = "";
+        for (var i = 0; i < len; i++) {
+            psData = psValues[i];
+            psString = "";
+            if (typeof(psData) != "undefined" && psData != "undefined" && psData != "") {
+                arrSplit = psData.split("_");
+                psString += "<b>"+arrSplit[0]+"</b> " + arrSplit[1] + " S" + arrSplit[2] +", ";
+            }
+            idString += arr[i] + ",";
+            nameString += "<li>" + psString + names[i] + " (" + arr[i] + ")</li>";
+        }
+
+        // Push the new data to the user interface
+        $("#moodleSecurity").val(idString);
+        $("#moodleCosmetic").append(nameString);
+        // Fallback value for an empty list
+        if (len == 0) {
+            $("#moodleCosmetic").append("<li><i>This object is not currently assigned to any of <b>your</b> courses.</i></li>");
+        }
+
+        // Peoplesoft data is not always present
+        len = psValues.length;
+        var psString = "";
+        for (var i = 0; i < len; i++) {
+            psString += psValues[i] + ",";
+        }
+        $("#psMoodle").val(psString);
+
+    }
+
+    // Click event for searching
+    $("#searchButton").click(function() {
+        $("#searchResultList").html("");
+        $("#loadingImage").show();
+        jQuery.ajax({
+            dataType: "json",
+            type : "POST",
+            url : "$portalPath/actions/moodle.ajax",
+            success:
+                function(data, status) {
+                    $("#loadingImage").hide();
+                    var keys = data.keys;
+                    var len = keys.length;
+                    // Loop through each course
+                    var hasCheckbox = false;
+                    for (var i = 0; i < len; i++) {
+                        var courseId = keys[i];
+                        var courseName = data.data[courseId].name;
+                        var psData = data.data[courseId].psData;
+                        // Check if we've got it somewhere already
+                        var checkBoxes = $(".moodleCB" + courseId);
+                        if (checkBoxes.length == 0) {
+                            // Add new items into the orphan list (unchecked)
+                            $("#moodleOrphans").removeClass("hidden");
+                            addCheckbox($("#moodleOrphanList"), courseId, courseName, psData, false);
+                            hasCheckbox = true;
+                        } else {
+                            $("#searchResultList").append("<ul><li>" + courseName + " (Already accessible)</li></ul>");
+                        }
+                    }
+                    if (hasCheckbox == true) {
+                        ##$("#moodleOrphanList").append("<br/>");
+                    }
+                },
+            error:
+                function (req, status, e) {
+                    $("#loadingImage").hide();
+                    $("#searchResultList").html(req.responseText);
+                },
+            data: {
+                username: $("#searchBox").val(),
+                verb: "queryMoodle"
+            }
+        });
+    });
+
+    // Click event for checkboxes - wrapped for dynamic insertion in addCheckbox()
+    $(".moodleCheckbox").click(function() {
+        cbClick($(this), $);
+    });
+    function cbClick(element, jQ) {
+        // What course was clicked?
+        var courseId = element.attr("data-id");
+        var checked = element.attr("checked");
+        // Set every other reference to this course to match
+        jQ(".moodleCB" + courseId).each(function(index){
+            $(this).attr("checked", checked);
+        });
+        // And sync the form data
+        syncMoodle($);
+    }
+
+    // Add a checkbox to the provided element
+    var cbTemplate = '<input type="checkbox" class="moodleCheckbox moodleCB%id%" data-id="%id%"data-ps="%ps%"  name="%name%" %checked%/> %psDisplay%%name%<br/>';
+    function addCheckbox(element, courseId, courseName, psData, checked) {
+        // Replace variables in the template
+        var output = cbTemplate.replace(/%id%/g, courseId);
+        output = output.replace(/%name%/g, courseName);
+        output = output.replace(/%ps%/g, psData);
+        if (typeof(psData) != "undefined" && psData != "undefined" && psData != "") {
+            var arr = psData.split("_");
+            output = output.replace(/%psDisplay%/g, "<b>" + arr[0] + "</b> " + arr[1] + " S" + arr[2] + ", ");
+        } else {
+            output = output.replace(/%psDisplay%/g, "");
+        }
+        if (checked) {
+            output = output.replace(/%checked%/g, 'checked="checked"');
+        } else {
+            output = output.replace(/%checked%/g, "");
+        }
+        // Add to the document
+        element.append(output);
+        // Attach a click event
+        $(".moodleCB" + courseId).click(function() {
+            cbClick($(this), $);
+        });
+    }
+
+    // AJAX query for course name
+    function addCourse(element, courseId) {
+        jQuery.ajax({
+            dataType: "json",
+            type : "POST",
+            url : "$portalPath/actions/moodle.ajax",
+            success:
+                function(data, status) {
+                    // Add the checkbox
+                    if (data.name != "Unknown") {
+                        addCheckbox(element, courseId, jQuery.trim(data.name), jQuery.trim(data.psData), true);
+                        syncMoodle($);
+                    }
+                },
+            error:
+                function (req, status, e) {
+                    // We don't care
+                },
+            data: {
+                courseId: courseId,
+                verb: "getCourseName"
+            }
+        });
+    }
+
+    ## This is a hacky, blocking sleep designed to keep a single thread of
+    ##   execution delayed until #1342 is addressed. The AJAX queries cannot
+    ##   go too fast whilst that problem exists.
+    function sleep(naptime){
+        naptime = naptime * 1000;
+        var sleeping = true;
+        var now = new Date();
+        var alarm;
+        var startingMSeconds = now.getTime();
+        while(sleeping){
+            alarm = new Date();
+            alarmMSeconds = alarm.getTime();
+            if(alarmMSeconds - startingMSeconds > naptime){ sleeping = false; }
+        }
+    }
+});
+</script>

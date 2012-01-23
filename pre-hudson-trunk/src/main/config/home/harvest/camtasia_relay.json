@@ -1,0 +1,51 @@
+{
+    "harvester": {
+        "type": "relay",
+        "relay": {
+            "filePath": "/u01/mediarep/relayfiles",
+            "archivePath": "/u01/mediarep/relayarchive",
+            "archiveFiles": "true",
+            "archiveExtras": "true",
+            "waitTime": "300"
+        }
+    },
+
+    "camtasia": {
+        "emailOne": "This is an automated message from the USQ Media Repository.\n\nYour Camtasia recording, '[[TITLE]]' has been received and is currently transcoding.\n\nYou will receive a second email when the transcoding is completed. In the interim, please be aware that the recording's access page is available here: http://${server.address}/media/default/detail/[[OID]]",
+        "emailTwo": "This is an automated message from the USQ Media Repository.\n\nYour Camtasia recording, '[[TITLE]]' has completed transcoding.\n\nThe recording's access page is available here: http://${server.address}/media/default/detail/[[OID]]\n\nTo use this recording on the StudyDesk please visit the address below and select the courses you require:\n\nhttp://${server.address}/media/default/workflow/[[OID]]"
+    },
+
+    "transformer": {
+        "harvestQueue": ["aperture"],
+        "indexOnHarvest": "true",
+        "renderQueue": ["ffmpeg"]
+    },
+
+    "indexer": {
+        "script": {
+            "type": "python",
+            "rules": "camtasia_relay.py"
+        },
+        "params": {
+            "repository.name": "USQ Lecture Recordings",
+            "repository.type": "Camtasia Relay",
+            "workflow_field": "workflowStep"
+        }
+    },
+
+    "stages": [
+        {
+            "name": "pending",
+            "label": "Pending",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"]
+        },
+        {
+            "name": "live",
+            "label": "Live",
+            "security": ["STAFF", "ALLSTAFF", "admin"],
+            "visibility": ["STAFF", "ALLSTAFF", "admin"],
+            "template": "workflows/usqLive"
+        }
+    ]
+}

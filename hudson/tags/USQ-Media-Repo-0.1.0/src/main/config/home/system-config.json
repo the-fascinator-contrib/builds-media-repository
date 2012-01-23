@@ -1,0 +1,513 @@
+{
+    "version": "0.7.14",
+    "configured": true,
+    "urlBase" : "http://${server.address}/media/",
+    "email" : "adfi_dev@usq.edu.au",
+    "sso": {
+        "plugins": ["USQSSO"],
+        "urlExclusions": {
+            "startsWith" : ["css/", "feed/", "images/", "js/", "flowplayer/", "mediaplayer/"],
+            "endsWith" : [".ico"],
+            "equals" : ["css"]
+        },
+        "trustTokens": {
+            "iceExport" : {
+                "publicKey": "iceExport",
+                "privateKey": "1234SECRET4321",
+                "expiry": "600"
+            }
+        }
+    },
+    "accesscontrol": {
+        "type" : "derby,course",
+        "derby" : {
+            "derbyHome" : "${fascinator.home}/database"
+        },
+        "course" : {
+            "derbyHome" : "${fascinator.home}/database"
+        }
+    },
+    "authentication": {
+        "type": "internal",
+        "internal": {
+            "path": "${fascinator.home}/security/users.properties"
+        }
+    },
+    "roles": {
+        "type": "internal,moodle,direct",
+        "direct": {
+            "server" : "http://coursereadings.usq.edu.au"
+        },
+        "internal": {
+            "path": "${fascinator.home}/security/roles.properties"
+        },
+        "moodle": {
+            "derbyHome" : "${fascinator.home}/database"
+        }
+    },
+    "storage": {
+        "type": "file-system",
+        "file-system": {
+            "home": "${storage.home}"
+        },
+        "ignoreFilter": ".svn|.ice|.*|~*"
+    },
+    "messaging" : {
+        "url" : "tcp://${server.ip}:61616",
+        "stompUrl" : "stomp://${server.ip}:61613",
+        "home" : "${fascinator.home}/activemq-data",
+        "threads" : [
+            {
+                "id" : "render",
+                "description" : "Render queue for priority objects requested by the user.",
+                "priority" : "8",
+                "config" : {
+                    "name" : "renderUser"
+                }
+            },
+            {
+                "id" : "render",
+                "description" : "Render queue (x2) for objects using transformers.",
+                "priority" : "3",
+                "config" : {
+                    "name" : "renderLow"
+                }
+            },
+            {
+                "id" : "render",
+                "description" : "Render queue (x2) for objects using transformers.",
+                "priority" : "3",
+                "config" : {
+                    "name" : "renderLow"
+                }
+            },
+            {
+                "id" : "harvest",
+                "description" : "Priority queue for user actions, allows access to the render queues faster.",
+                "priority" : "8",
+                "config" : {
+                    "name" : "harvestUser",
+                    "normal-renderers" : {
+                        "default" : "renderLow"
+                    },
+                    "user-renderer" : "renderUser"
+                }
+            },
+            {
+                "id" : "harvest",
+                "description" : "Standard harvest queue for new object. May optionally run some fast transformers and an index before routing to the render queues.",
+                "priority" : "4",
+                "config" : {
+                    "name" : "harvest",
+                    "normal-renderers" : {
+                        "default" : "renderLow"
+                    },
+                    "user-renderer" : "renderUser"
+                }
+            },
+            {
+                "id" : "subscriber",
+                "description" : "Subscriber queue for event log.",
+                "priority": "7",
+                "config": {
+                    "name" : "subscriber",
+                    "subscribers": [
+                        "solr-event-log"
+                    ]
+                }
+            },
+            {
+                "id" : "solrwrapper",
+                "description" : "Wrapper for ingest into main Solr core.",
+                "priority": "5",
+                "config": {
+                    "name" : "solrwrapper"
+                }
+            },
+            {
+                "id" : "DirectMessageService",
+                "description" : "Central queue for processing/controlling DiReCt integration.",
+                "priority" : "5",
+                "config" : {
+                    "name" : "DirectMessageService"
+                }
+            },
+            {
+                "id" : "DirectOutgoingApi",
+                "description" : "API for DiReCt's access to discover new items waiting for its attention.",
+                "priority" : "5",
+                "config" : {
+                    "name" : "DirectOutgoingApi"
+                }
+            },
+            {
+                "id" : "DirectIncomingApi",
+                "description" : "API for DiReCt to post responses to in notifying the media repository.",
+                "priority" : "5",
+                "config" : {
+                    "name" : "DirectIncomingApi"
+                }
+            },
+            {
+                "id" : "emailnotification",
+                "description" : "Queue to send email notifications",
+                "priority" : "8",
+                "config" : {
+                    "name" : "emailnotification",
+                    "debug" : false,
+                    "from" : {
+                        "email" : "adfi_dev@usq.edu.au",
+                        "name": "Media Server Dev"
+                    },
+                    "smtp" : {
+                        "host" : "smtp-gw.usq.edu.au"
+                    },
+                    "defaults" : {
+                        "subject" : "Media Server Notification !!DEV!!"
+                    }
+                }
+            }
+        ],
+        "deactivatedThreads" : [
+            {
+                "id" : "DirectTesting",
+                "description" : "TESING ONLY. This queue simulates DiReCt's role in the workflow.",
+                "priority" : "5",
+                "config" : {
+                    "name" : "DirectTesting"
+                }
+            }
+        ]
+    },
+    "indexer": {
+        "type": "solr",
+        "properties": "SOF-META",
+        "useCache" : true,
+        "buffer": {
+            "docLimit" : "200",
+            "sizeLimit" : "204800",
+            "timeLimit" : "30"
+        },
+        "solr": {
+            "uri": "http://localhost:${jetty.port}/solr/fascinator",
+            "coreName": "fascinator",
+            "autocommit": false,
+            "embedded": false,
+            "username": "admin",
+            "password": "admin"
+        },
+        "anotar": {
+            "uri": "http://localhost:${jetty.port}/solr/anotar",
+            "coreName": "anotar",
+            "autocommit": true,
+            "username": "admin",
+            "password": "admin"
+        }
+    },
+    "transformerDefaults": {
+        "aperture": {
+            "id": "aperture",
+            "outputPath": "${java.io.tmpdir}/${user.name}/ice2-output"
+        },
+        "ffmpeg": {
+            "id": "ffmpeg",
+            "outputPath": "${java.io.tmpdir}/${user.name}/ffmpeg-output",
+            "presetsPath": "/usr/local/share/ffmpeg",
+            "binaries": {
+                "transcoding": "ffmpeg",
+                "metadata": "ffprobe"
+            },
+            "database": {
+                "enabled": "false",
+                "derbyHome": "${fascinator.home}/database"
+            },
+            "supportedFormats": [
+                {
+                    "group": "audio",
+                    "extensions": "aac,ac3,aif,aiff,au,m4a,mp2,mp3,oga,ogg,swa,wav"
+                },
+                {
+                    "group": "image",
+                    "extensions": "bmp,gif,jpeg,jpg,png,tif,tiff"
+                },
+                {
+                    "group": "video",
+                    "extensions": "asf,avi,f4v,flv,h264,hdmov,m4v,matroska,mjpeg,mjpg,mov,mp4,mpg,mpeg,mpeg4,ogm,ogv,ogx,swf,wmv"
+                }
+            ],
+            "displayTypes": {
+                "video": "ffmpeg"
+            },
+            "merging": {
+                "mpegFrameRate": "25",
+                "finalFormat": "avi",
+                "finalFrameRate": "10"
+            },
+            "transcodings": {
+                "audio": [
+                    {
+                        "alias": "MP3 Preview",
+                        "renditions": [
+                            {
+                                "name": "ffmpegPreview.mp3",
+                                "type": "Preview",
+                                "formatMetadata": "MP3",
+                                "codecMetadata": "mp3",
+                                "audioOnly": "true",
+                                "options": "-b 192k",
+                                "output": "-f mp3"
+                            }
+                        ]
+                    }
+                ],
+                "image": [
+                    {
+                        "alias": "JPG Renditions",
+                        "renditions": [
+                            {
+                                "name": "ffmpegThumbnail.jpg",
+                                "type": "Thumbnail",
+                                "formatMetadata": "JPG",
+                                "maxWidth": "160",
+                                "maxHeight": "120",
+                                "padding": "none",
+                                "options": "-r 1",
+                                "output": "-vcodec mjpeg -f mjpeg"
+                            },
+                            {
+                                "name": "ffmpegPreview.jpg",
+                                "type": "Preview",
+                                "formatMetadata": "JPG",
+                                "maxWidth": "600",
+                                "padding": "none",
+                                "options": "-r 1",
+                                "output": "-vcodec mjpeg -f mjpeg"
+                            }
+                        ]
+                    }
+                ],
+                "video": [
+                    {
+                        "alias": "JPG Thumbnail",
+                        "renditions": [
+                            {
+                                "name": "ffmpegThumbnail.jpg",
+                                "type": "Thumbnail",
+                                "formatMetadata": "JPG",
+                                "maxWidth": "160",
+                                "maxHeight": "90",
+                                "padding": "filter",
+                                "options": "-deinterlace -ss [[OFFSET]] -t 00:00:01 -r 1",
+                                "output": "-vcodec mjpeg -f mjpeg"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "JPG Splash Screen",
+                        "renditions": [
+                            {
+                                "name": "ffmpegSplash.jpg",
+                                "type": "AltPreview",
+                                "formatMetadata": "JPG",
+                                "maxWidth": "480",
+                                "maxHeight": "270",
+                                "padding": "filter",
+                                "options": "-deinterlace -ss [[OFFSET]] -t 00:00:01 -r 1",
+                                "output": "-vcodec mjpeg -f mjpeg"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "MP3 Audio",
+                        "renditions": [
+                            {
+                                "name": "audio.mp3",
+                                "type": "AltPreview",
+                                "formatMetadata": "MP3",
+                                "codecMetadata": "mp3",
+                                "audioOnly": "true",
+                                "padding": "individual",
+                                "options": "-b 192k",
+                                "output": "-f mp3"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "FLV Preview",
+                        "renditions": [
+                            {
+                                "name": "preview.flv",
+                                "type": "Preview",
+                                "formatMetadata": "FLV",
+                                "maxWidth": "400",
+                                "maxHeight": "224",
+                                "padding": "filter",
+                                "options": "-b 128k -ab 64k -ar 44100 -ac 1",
+                                "output": "-f flv"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "FLV High Res",
+                        "renditions": [
+                            {
+                                "name": "hiRes.flv",
+                                "type": "AltPreview",
+                                "formatMetadata": "FLV",
+                                "maxWidth": "800",
+                                "maxHeight": "600",
+                                "padding": "filter",
+                                "options": "-b 128k -ab 64k -ar 44100 -ac 1",
+                                "output": "-f flv"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "Apple MP4 Pass 1",
+                        "renditions": [
+                            {
+                                "name": "nullFile.mp4",
+                                "type": "AltPreview",
+                                "formatMetadata": "MP4",
+                                "maxWidth": "480",
+                                "maxHeight": "320",
+                                "padding": "filter",
+                                "options": "-an -pass 1 -vcodec libx264 -vpre usqpass1 -vpre ipod320 -b 128K -bt 128K -metadata title=iPhone_x264 -threads 4",
+                                "output": "-f mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "Apple MP4 Pass 2",
+                        "renditions": [
+                            {
+                                "name": "preview.mp4",
+                                "type": "AltPreview",
+                                "formatMetadata": "MP4",
+                                "codecMetadata": "h264",
+                                "maxWidth": "480",
+                                "maxHeight": "320",
+                                "padding": "filter",
+                                "options": "-acodec libfaac -ab 32k -ar 22050 -pass 2 -aspect 480:320 -vcodec libx264 -vpre usqpass2 -vpre ipod320 -b 128K -bt 128K -metadata title=iPad_x264 -threads 4",
+                                "output": "-f mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "Apple MP4 Pass 1 - Hi Res",
+                        "renditions": [
+                            {
+                                "name": "nullFile.mp4",
+                                "type": "AltPreview",
+                                "formatMetadata": "MP4",
+                                "maxWidth": "1024",
+                                "maxHeight": "768",
+                                "padding": "filter",
+                                "options": "-an -pass 1 -vcodec libx264 -vpre usqpass1 -vpre ipod320 -b 128K -bt 128K -metadata title=iPod_x264 -threads 4",
+                                "output": "-f mp4"
+                            }
+                        ]
+                    },
+                    {
+                        "alias": "Apple MP4 Pass 2 - Hi Res",
+                        "renditions": [
+                            {
+                                "name": "hiRes.mp4",
+                                "type": "AltPreview",
+                                "formatMetadata": "MP4",
+                                "codecMetadata": "h264",
+                                "maxWidth": "1024",
+                                "maxHeight": "768",
+                                "padding": "filter",
+                                "options": "-acodec libfaac -ab 32k -ar 22050 -pass 2 -aspect 1024:768 -vcodec libx264 -vpre usqpass2 -vpre ipod320 -b 128K -bt 128K -metadata title=iPod_x264 -threads 4",
+                                "output": "-f mp4"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "ims": {
+            "id": "ims"
+        },
+        "jython" : {
+            "id" : "jython"
+        }
+    },
+    "uploader": {
+        "workflow2": {
+            "screen-label": "USQ Copyright Materials",
+            "security": ["ALLSTAFF", "admin"],
+            "upload-path": "${fascinator.home}/uploads/usq-files",
+            "json-config": "${fascinator.home}/harvest/workflows/usq-files.json"
+        },
+        "workflow1": {
+            "screen-label": "DiReCt Copyright Management",
+            "security": ["ALLSTAFF", "admin"],
+            "upload-path": "${fascinator.home}/uploads/direct-files",
+            "json-config": "${fascinator.home}/harvest/workflows/direct-files.json"
+        }
+    },
+    "mime-types" : {
+        "tfpackage" : "application/x-fascinator-package"
+    },
+    "database-service": {
+        "derbyHome" : "${fascinator.home}/database-service"
+    },
+    "portal": {
+        "home": "${portal.home}",
+        "contentDir": "${portal.home}",
+        "defaultView": "default",
+        "skins": {
+            "default": "default",
+            "order": ["media", "usq"]
+        },
+        "cachingLevel": "dynamic",
+        "layout": "layout",
+        "nativeJython": true,
+        "harvestFiles": "${fascinator.home}/harvest",
+        "houseKeeping": {
+            "config": {
+                "derbyHome" : "${fascinator.home}/database",
+                "quartzConfig" : "${fascinator.home}/quartz.properties",
+                "desktop": true,
+                "frequency": "300",
+                "jobs" : []
+            }
+        },
+        "oai-pmh": {
+            "sessionExpiry": "300000",
+            "metadataFormats": {
+                "oai_dc": {
+                    "enabledInAllViews": false,
+                    "enabledViews": [],
+                    "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+                    "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
+                }
+            }
+        },
+        "byteRangeSupported": "true",
+        "compression": {
+            "ignore": [
+                "video/mp4",
+                "video/x-flv"
+            ]
+        }
+    },
+    "watcher" : {
+        "path": "${fascinator.home}/watcher"
+    },
+    "subscriber": {
+        "solr": {
+            "uri": "http://localhost:${jetty.port}/solr/eventlog",
+            "coreName": "eventlog",
+            "username": "admin",
+            "password": "admin",
+            "buffer": {
+                "docLimit" : "200",
+                "sizeLimit" : "204800",
+                "timeLimit" : "30"
+            }
+        }
+    }
+}
