@@ -1,0 +1,59 @@
+### Display a link to a video player
+#macro(displayAudioBlock $pid $link $message $self)
+    #set($format = $self.getFFmpegData($pid, "format"))
+    #set($codec = $self.getFFmpegData($pid, "codec"))
+    #set($width = $self.getFFmpegData($pid, "width"))
+    #set($height = $self.getFFmpegData($pid, "height"))
+    #set($size = $self.getFFmpegData($pid, "size"))
+    #set($size = $self.niceSize($size))
+
+    <a href="$link">
+        <img alt='$message' src='$portalPath/images/play_overlay.png'/>
+    </a>
+    <script>
+        console.log("$width")
+    </script>
+    #if ($width != "")
+    <b>Resolution</b>: $width x $height<br/>
+    #end
+    #if ($codec == "")
+    <b>Format</b>: $format<br/>
+    #else
+    <b>Format</b>: $format ($codec)<br/>
+    #end
+    <b>Size</b>: $size<br/>
+
+#end
+
+
+### Display an empty player slot for missing payloads
+#macro(displayEmptyBlock)
+    N/A
+#end
+
+
+#set($validFFmpeg = $self.parseFFmpeg($parent))
+#if($parent.isDetail())
+    #set($outputs = $self.getTranscodings())
+    
+    <table id="ffmpeg-display">
+        <tbody>
+    ###################################
+    ## MP3 - Audio
+    ###################################
+    #if ($outputs.contains("audio.mp3"))
+            <tr>
+                <th>MP3</th>
+            </tr>
+            <tr>
+                <td>
+        ##<a class="audio" href="$portalPath/detail/$oid/audio.mp3?download=false">MP3 Audio Version</a>
+        #displayAudioBlock("audio.mp3", "$portalPath/detail/$oid/audio.mp3?download=false", "Play MP3 Version", $self)
+                </td>
+            </tr>
+    #else
+        #displayEmptyBlock()
+    #end
+        </tbody>
+    </table>
+#end

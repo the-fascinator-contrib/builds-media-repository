@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+  <!-- Console appender -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d %-8X{name} %-6p %-20.20c{0} %m%n</Pattern>
+    </layout>
+  </appender>
+  <!-- Sifting appender based on MDC -->
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <Key>name</Key>
+      <DefaultValue>main</DefaultValue>
+    </discriminator>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d %-8X{name} %-6p %-20.20c{0} %m%n</Pattern>
+    </layout>
+    <sift>
+      <appender name="FILE-${name}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Append>true</Append>
+        <File>${fascinator.home:-.}/logs/${name}.log</File>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+          <Pattern>%d %-8X{name} %-6p %-20.20c{0} %m%n</Pattern>
+        </layout>
+        <RollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+          <FileNamePattern>${fascinator.home:-.}/logs/archives/%d{yyyy-MM-ww}_${name}.zip</FileNamePattern>
+        </RollingPolicy>
+      </appender>
+    </sift>
+  </appender>
+  <!-- Cyclic appender for portal background functions -->
+  <appender name="CYCLIC" class="ch.qos.logback.core.read.CyclicBufferAppender">
+    <MaxSize>15</MaxSize>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="SIFT" />
+  </root>
+  <logger name="au.edu.usq" level="DEBUG" />
+  <logger name="au.edu.usq.fascinator.BackupClient" level="INFO">
+    <appender-ref ref="CYCLIC" />
+  </logger>
+  <logger name="au.edu.usq.fascinator.HarvestClient" level="INFO">
+    <appender-ref ref="CYCLIC" />
+  </logger>
+  <logger name="au.edu.usq.fascinator.HarvestQueueConsumer" level="INFO">
+    <appender-ref ref="CYCLIC" />
+  </logger>
+  <logger name="au.edu.usq.fascinator.RenderQueueConsumer" level="INFO">
+    <appender-ref ref="CYCLIC" />
+  </logger>
+  <logger name="au.edu.usq.fascinator.portal.HouseKeeper" level="DEBUG">
+    <appender-ref ref="CYCLIC" />
+  </logger>
+</configuration>

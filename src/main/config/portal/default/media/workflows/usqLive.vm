@@ -1,0 +1,75 @@
+#set($oid = $self.getFormData("oid"))
+#set($pageTitle = $self.getFormData("title"))
+#set($workflowId = $self.getFormData("upload-file-workflow"))
+#set($nextStep = $self.getFormData("nextStep"))
+#set($nextStepLabel = $self.getFormData("nextStepLabel"))
+#set($currentStep = $self.getFormData("currentStep"))
+#set($currentStepLabel = $self.getFormData("currentStepLabel"))
+<div class="grid_16">
+    <div class="box">
+        <div id="inputForms"><!-- --></div>
+    </div>
+</div>
+<hr />
+<script type="text/javascript" src="$portalPath/javascript-widgets/widgets2.js"> </script>
+<script type="text/javascript">
+  var metadata = $self.getMetadata().toString();
+
+  function submitFunc(widgetForm, data) {
+      jQuery("#uploading-progress").show();
+      jQuery(".form-fields-submit").attr("disabled", true);
+  }
+  
+  function afterSubmit(widgetForm, data) {
+      var test, retries=2;
+      test=function(){
+        jQuery.getJSON("usqLive", {isIndexed:data.oid},
+            function(j){
+                if(j.isIndexed){
+                    window.location.href = "$portalPath/home";
+                }else{
+                    // try again in a second
+                    while(retries){
+                        retries-=1;
+                        setTimeout(test, 1000);
+                    }
+                }
+            }
+        );
+      };
+      if(data.oid){
+        test();
+      }
+  }
+
+  (function(jQ){
+    var pMsg=jQ("<p style='font-size:120%;color:green;'>Loading form data. Please wait...</p>");
+    jQ("#inputForms").hide().after(pMsg);
+
+    jQ(function(){
+        function onContentLoaded(){
+            widgets.changeToTabLayout(jQ(".inputscreens")).tabs();
+            widgets.contentLoaded(function(){
+                try{
+                    if (metadata.formData != undefined){
+                       widgets.formsById["main-form"].restore(metadata.formData);
+                    }
+                    var title=jQ("input[id=title]");
+                    title.change(function(){
+                        var ft=jQ("#formTitle"), text = jQ.trim(title.val());
+                        text = text?" - "+text:"";
+                        ft.text(text);
+                    }).change();
+                    pMsg.remove();
+                    jQ("#inputForms").show();
+                }catch(e){alert(e);}
+            });
+        }
+        // load the widget forms
+        jQ("#inputForms").load("$portalPath/workflows/forms/usqInput",
+            { "oid": "$oid", "upload-file-workflow": "$workflowId", "nextStep": "$nextStep", "nextStepLabel":
+                "$nextStepLabel", "step": "$currentStep", "currentStepLabel": "$currentStepLabel" },
+            onContentLoaded);
+    });
+  })(jQuery);
+</script>
