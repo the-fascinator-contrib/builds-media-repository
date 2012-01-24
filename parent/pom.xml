@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>au.edu.usq.fascinator.media</groupId>
+    <groupId>com.googlecode.media-repository</groupId>
     <artifactId>fascinator-media-repository</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>USQ Media Repository Project</name>
+    <name>Fascinator Media Repository Project</name>
     <properties>
-        <fascinator.version>1.0.0</fascinator.version>
+        <fascinator.version>1.0.6</fascinator.version>
         <jetty.version>6.1.24</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Used in creation of external URLs, include port if not 80 -->
-        <!-- DEV server <server.address>mediarep-dev-vip.usq.edu.au</server.address>-->
-        <!-- TRIAL server <server.address>mediarep.usq.edu.au</server.address>-->
         <server.address>localhost:9997</server.address>
         <!-- AMQ broker will need this if external parties are sending -->
-        <!-- DEV server <server.ip>172.16.25.108</server.ip>-->
-        <!-- TRIAL server <server.ip>139.86.7.109</server.ip>-->
         <server.ip>localhost</server.ip>
         <!-- The port to start Jetty on -->
         <server.port>9997</server.port>
@@ -25,27 +21,27 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>au.edu.usq.fascinator</groupId>
+                <groupId>com.googlecode.the-fascinator</groupId>
                 <artifactId>fascinator-common</artifactId>
                 <version>${fascinator.version}</version>
             </dependency>
             <dependency>
-                <groupId>au.edu.usq.fascinator</groupId>
+                <groupId>com.googlecode.the-fascinator</groupId>
                 <artifactId>fascinator-core</artifactId>
                 <version>${fascinator.version}</version>
             </dependency>
             <dependency>
-                <groupId>au.edu.usq.fascinator</groupId>
+                <groupId>com.googlecode.the-fascinator</groupId>
                 <artifactId>fascinator-plugin-api</artifactId>
                 <version>${fascinator.version}</version>
             </dependency>
             <dependency>
-                <groupId>au.edu.usq.fascinator.plugins</groupId>
+                <groupId>com.googlecode.the-fascinator.plugins</groupId>
                 <artifactId>plugin-indexer-solr</artifactId>
                 <version>${fascinator.version}</version>
             </dependency>
             <dependency>
-                <groupId>au.edu.usq.fascinator.plugins</groupId>
+                <groupId>com.googlecode.the-fascinator.plugins</groupId>
                 <artifactId>plugin-storage-filesystem</artifactId>
                 <version>${fascinator.version}</version>
             </dependency>
@@ -77,26 +73,4 @@
             </plugins>
         </pluginManagement>
     </build>
-    <repositories>
-        <repository>
-            <id>fascinator-releases</id>
-            <url>https://fascinator.usq.edu.au/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>fascinator-snapshots</id>
-            <url>https://fascinator.usq.edu.au/nexus/content/groups/public-snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>
