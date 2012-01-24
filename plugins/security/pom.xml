@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>au.edu.usq.fascinator.media.security</groupId>
+    <groupId>com.googlecode.media-repository</groupId>
     <artifactId>fascinator-media-security</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>USQ Media Repository - Security Plugins</name>
+    <name>Media Repository - Security Plugins</name>
     <parent>
-        <groupId>au.edu.usq.fascinator.media</groupId>
+        <groupId>com.googlecode.media-repository</groupId>
         <artifactId>fascinator-media-repository</artifactId>
         <version>0.3.0-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
@@ -15,12 +15,12 @@
     <dependencies>
         <!-- Fascinator -->
         <dependency>
-            <groupId>au.edu.usq.fascinator</groupId>
+            <groupId>com.googlecode.the-fascinator</groupId>
             <artifactId>fascinator-core</artifactId>
         </dependency>
         <!-- Fascinator Plugins -->
         <dependency>
-            <groupId>au.edu.usq.fascinator.plugins</groupId>
+            <groupId>com.googlecode.the-fascinator.plugins</groupId>
             <artifactId>plugin-indexer-solr</artifactId>
         </dependency>
         <!-- Unit Testing -->

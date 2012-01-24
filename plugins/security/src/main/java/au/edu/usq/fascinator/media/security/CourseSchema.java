@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package au.edu.usq.fascinator.media.security;
+package com.googlecode.mediarepository;
 
-import au.edu.usq.fascinator.common.access.GenericSchema;
+import com.googlecode.fascinator.common.access.GenericSchema;
 
 /**
  * A schema to model USQ enrollment data

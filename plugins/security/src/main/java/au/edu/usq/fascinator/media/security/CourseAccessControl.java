@@ -16,14 +16,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package au.edu.usq.fascinator.media.security;
+package com.googlecode.mediarepository;
 
-import au.edu.usq.fascinator.api.PluginDescription;
-import au.edu.usq.fascinator.api.access.AccessControl;
-import au.edu.usq.fascinator.api.access.AccessControlException;
-import au.edu.usq.fascinator.api.access.AccessControlSchema;
-import au.edu.usq.fascinator.api.authentication.AuthenticationException;
-import au.edu.usq.fascinator.common.JsonSimple;
+import com.googlecode.fascinator.api.PluginDescription;
+import com.googlecode.fascinator.api.access.AccessControl;
+import com.googlecode.fascinator.api.access.AccessControlException;
+import com.googlecode.fascinator.api.access.AccessControlSchema;
+import com.googlecode.fascinator.api.authentication.AuthenticationException;
+import com.googlecode.fascinator.common.JsonSimple;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,8 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
