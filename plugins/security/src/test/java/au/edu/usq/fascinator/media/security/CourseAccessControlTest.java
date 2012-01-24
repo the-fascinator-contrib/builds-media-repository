@@ -16,13 +16,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package au.edu.usq.fascinator.media.security;
+package com.googlecode.mediarepository;
 
-import au.edu.usq.fascinator.api.access.AccessControlException;
-import au.edu.usq.fascinator.api.access.AccessControlSchema;
+import com.googlecode.fascinator.api.access.AccessControlException;
+import com.googlecode.fascinator.api.access.AccessControlSchema;
+
 import java.io.File;
 import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.After;
