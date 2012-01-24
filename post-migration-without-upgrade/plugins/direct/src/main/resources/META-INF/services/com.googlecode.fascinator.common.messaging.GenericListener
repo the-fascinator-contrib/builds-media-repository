@@ -1,0 +1,4 @@
+com.googlecode.mediarepository.DirectIncomingApi
+com.googlecode.mediarepository.DirectMessageService
+com.googlecode.mediarepository.DirectOutgoingApi
+com.googlecode.mediarepository.DirectTesting

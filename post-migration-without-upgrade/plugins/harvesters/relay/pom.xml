@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.googlecode.media-repository</groupId>
+    <artifactId>fascinator-media-relay</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Media Repository - Relay Harvester</name>
+    <parent>
+        <groupId>com.googlecode.media-repository</groupId>
+        <artifactId>fascinator-media-repository</artifactId>
+        <version>0.3.0-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+    <dependencies>
+        <!-- Fascinator -->
+        <dependency>
+            <groupId>com.googlecode.the-fascinator</groupId>
+            <artifactId>fascinator-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.the-fascinator</groupId>
+            <artifactId>fascinator-plugin-api</artifactId>
+        </dependency>
+        <!-- External -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
+    </dependencies>
+</project>

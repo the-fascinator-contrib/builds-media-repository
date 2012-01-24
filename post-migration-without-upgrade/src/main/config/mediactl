@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# /etc/rc.d/init.d/mediactl
+# =========================
+# Wrapper script for the Media Repository.
+# This script will execute the server control
+# script in the context of the appropriate username.
+
+# Path to the scripts
+mediahome=/opt/tf2/media
+controlscript=$mediahome/server/tf.sh
+harvestscript=$mediahome/server/tf_harvest.sh
+svnlocation=$mediahome/code
+projectfile=$svnlocation/pom.xml
+
+# User to run server as
+username=mediarep
+
+case "$1" in
+  update)
+    cmd="svn update $svnlocation"
+    ;;
+  forcebuild)
+    cmd="mvn clean install -U -f $projectfile"
+    ;;
+  build)
+    cmd="mvn clean install -f $projectfile"
+    ;;
+  relayharvest)
+    cmd="$harvestscript camtasia_relay"
+    ;;
+  *)
+    cmd="$controlscript $1"
+esac
+
+cmd="su - $username -c '$cmd'"
+eval "$cmd"

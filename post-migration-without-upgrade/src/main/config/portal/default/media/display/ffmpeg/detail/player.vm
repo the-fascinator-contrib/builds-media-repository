@@ -1,0 +1,357 @@
+#if($renderContent)
+<script type="text/javascript" src="$portalPath/js/modernizr-1.5.min.js"></script>
+<script type="text/javascript" src="$portalPath/mediaplayer/jwplayer.js"></script>
+<script type="text/javascript" src="$portalPath/mediaplayer/swfobject.js"></script>
+
+#set($validFFmpeg = $self.parseFFmpeg($parent))
+#set($oid = $metadata.get("id"))
+#set($mimeType = $metadata.getList("dc_format").get(0))
+#set($thumbnail = $self.getSplashScreen($metadata, "ffmpegSplash.jpg"))
+#set($preview = $metadata.get("preview"))
+#set($fallbackPreview = $preview)
+#set($previewPid = $parent.getPreviewPid())
+#if ($previewPid != "")
+    #set($preview = $previewPid)
+#end
+#set($pidMime = $self.getMimeType($preview, $parent))
+#set($format = $self.getFFmpegData($preview, "format"))
+#set($codec = $self.getFFmpegData($preview, "codec"))
+#set($width = $self.getFFmpegData($preview, "width"))
+#set($height = $self.getFFmpegData($preview, "height"))
+#set($duration = $self.getBasicFFmpegData("duration"))
+#if ($duration == "")
+    #set($duration = "0")
+#end
+
+<script type="text/javascript">
+var disableVideoAnotar = true;
+
+$(function() {
+    function getStyle(width, height) {
+        ## Explicit height on the DIV causes problems if more content then
+        ##   then the player goes inside.
+        ##return "width: " + width + "px; height: " + height + "px;";
+        return "width: " + width + "px;";
+    }
+
+    var oid = "$oid";
+    var filename = "$preview";
+    var filepath = "$portalPath/download/$oid/" + filename;
+    var fallback = "$portalPath/detail/$oid/$fallbackPreview";
+    var thumbnail = "$thumbnail";
+    var mimeType = "$pidMime";
+    var isAudio = $self.jsBool($self.isAudio($pidMime));
+    var isVideo = $self.jsBool($self.isVideo($pidMime));
+    var player = {};
+    var width = $width + 10;
+    var height = $height + 10;
+    var duration = $duration;
+    if (width == 10) {
+        width = 410;
+        height = 234;
+    }
+    if (isAudio) {
+        height = 24;
+    }
+    var style = getStyle(width, height);
+    
+    ## Establish support for the codec in this browser
+    var format = "$format";
+    var codec = "$codec";
+    var codecSupported = false;
+    var codecTested = false;
+    var supportMp4 = false;
+    
+    if (codec != "") {
+        if (isAudio) {
+            codecSupported = Modernizr.audio[codec];
+            codecTested = codecSupported;
+            if (codecSupported == "" || codecSupported == undefined) {
+                if (codec == "mp3") {
+                codecSupported = true;
+                codecTested = false;
+                }
+            }
+        }
+        if (isVideo) {
+            codecSupported = Modernizr.video[codec];
+            codecTested = codecSupported;
+        }
+    } else {
+        
+        if (isAudio && mimeType == "audio/mpeg") {
+            codecSupported = true;
+            codecTested = false;
+        }
+        
+        if (isVideo) {
+            ## if the mimeType is video/x-flv, need to check if the browser support the mimeType
+            if (mimeType=="video/x-flv") {
+                ## Check if has h264 mp4 rendition, if yes, play mp4 and fallback to flv if the browser not support
+                ## This is hacky but the best solution for now to fall back to mp4 if the browser support
+                codecSupported = Modernizr.video["h264"]
+                if (codecSupported) {
+                    ##check if there is h264 rendition
+                    var hasMp4 = "$self.hasMp4()"
+                    if (hasMp4) {
+                        codecTested = true;
+                        supportMp4 = true;
+                        fallback=fallback.replace(/preview\.flv$/, "preview.mp4").replace(/hiRes\.flv$/, "hiRes.mp4");
+                    } 
+                } else {
+                    codecSupported = true;
+                    codecTested = false;
+                }
+                
+            }
+        }
+    }
+    
+    ## We don't support this content
+    if (!codecSupported) {
+        disableVideoAnotar = true;
+
+        ## There's another preview, redirect
+        if (filepath != fallback) {
+            if(/hiRes\.mp4$/.test(filepath) && /preview\.flv$/.test(fallback)){
+                fallback=fallback.replace(/preview\.flv$/, "hiRes.flv");
+            }
+            var message = 'It looks like your browser does not support playback of this video.';
+            var link = '<a href="' + fallback + '" target="_blank">$fallbackPreview</a>';
+            var html = '<p>' + message + '<br/><br/>Redirecting: ' + link + '</p>';
+            $("#player-container").html(html);
+
+            ## Some query parameters are in session from SSO round-trip
+            ##   or they may be there as part of a normal GET request. This
+            ##   method gets both and avoids duplication
+            #set ($ssoQuery = "")
+            #set ($qPreview = $velocityContext.get('formData').get('preview'))
+            #if ($qPreview != $nullValue)
+                #set($ssoQuery = $ssoQuery + "&preview=" + $qPreview)
+            #end
+            #set ($qDownload = $velocityContext.get('formData').get('download'))
+            #if ($qDownload != $nullValue)
+                #set($ssoQuery = $ssoQuery + "&download=" + $qDownload)
+            #end
+            window.location = fallback + "?$ssoQuery";
+
+        ## We're done
+        } else {
+            var message = 'Sorry, but the content doesn\'t appear to be compatible with your browser, but the link below will let you download the content to player with a local player.';
+            var link = '<a href="' + filepath + '" target="_blank">' + filename + '</a>';
+            var html = '<p>' + message + '<br/><br/>Download: ' + link + '</p>';
+            $("#player-container").html(html);
+        }
+
+    ## We SHOULD support the content, lets try to build a player
+    } else {
+        if (supportMp4) {
+            var message = 'It looks like your browser support better playback of this video.';
+            var link = '<a href="' + fallback + '" target="_blank">$fallbackPreview</a>';
+            var html = '<p>' + message + '<br/><br/>Redirecting: ' + link + '</p>';
+            $("#player-container").html(html);
+
+            ## Some query parameters are in session from SSO round-trip
+            ##   or they may be there as part of a normal GET request. This
+            ##   method gets both and avoids duplication
+            #set ($ssoQuery = "")
+            #set ($qPreview = $velocityContext.get('formData').get('preview'))
+            #if ($qPreview != $nullValue)
+                #set($ssoQuery = $ssoQuery + "&preview=" + $qPreview)
+            #end
+            #set ($qDownload = $velocityContext.get('formData').get('download'))
+            #if ($qDownload != $nullValue)
+                #set($ssoQuery = $ssoQuery + "&download=" + $qDownload)
+            #end
+            window.location = fallback + "?$ssoQuery";
+        }
+        
+        var html5test = codecTested && ((isVideo && Modernizr.video) || (isAudio && Modernizr.audio));
+        player1 = '';
+
+        #####################
+        ##  HTML5 Player
+        #####################
+        if (html5test) {
+            ## hack for fixing ipad mp3 display issue for html5 video tag
+            if(codec=="mp3")
+                height =41;
+                
+            var widthHeight = 'width="' + width + '" height="' + height + '"';
+            
+            player1 = '<video ' + widthHeight + ' controls><source src="' +
+                filename + '" ';
+
+            #if ($thumbnail)
+            player1 += 'poster = "' + thumbnail + '" ';
+            #end
+
+            player1 += 'type=\'$pidMime\'><a href=' + filepath +
+                '>Download this video</a></video>'
+
+            $("#player-container").attr("style", style).html(player1);
+
+        #####################
+        ##  Flash fallback
+        #####################
+        } else {
+            player1 = '<p id="player" style="' + style + '"></p>';
+
+            ## AUDIO
+            if (isAudio) {
+                ##player1 = '<b>Audio:</b>' + player1;
+                ##player1 += '<p><br/><a class="audio" href="' + filepath + '">Download audio directly: \'' + filename + '\'</a><p>';
+                $("#player-container").attr("style", style).html(player1);
+
+                jwplayer("player").setup({
+                    flashplayer: "$portalPath/mediaplayer/player.swf",
+                    controlbar: "bottom",
+                    file: filepath,
+                    duration: duration,
+                    height: height,
+                    width: width
+                });
+
+            ## VIDEO
+            } else {
+                $("#player-container").attr("style", style).html(player1);
+
+                jwplayer("player").setup({
+                    flashplayer: "$portalPath/mediaplayer/player.swf",
+                    "controlbar.idlehide": true,
+                    file: filepath,
+                    duration: duration,
+                    height: height,
+                #if ($thumbnail)
+                    width: width,
+                    image: thumbnail
+                #else
+                    width: width
+                #end
+                });
+            }
+        }
+    }
+
+    ## Annotation controls required for detail mode only
+    #if($parent.isDetail())
+    if (!disableVideoAnotar) {
+        $("#player_seek_start").live("click", function() {
+            player.seek(0);
+        });
+        $("#player_rewind").live("click", function() {
+            player.seek(player.getTime() - 1);
+        });
+        $("#player_play").live("click", function() {
+            player.toggle();
+        });
+        $("#player_forward").live("click", function() {
+            player.seek(player.getTime()+1);
+        });
+        $("#player_seek_end").live("click", function() {
+            player.seek(player.getClip().fullDuration-1);
+            player.pause();
+        });
+
+        $("#player_mark_start_time").live("click", function() {
+            $("#txtStartMark").attr("value", player.getTime());
+            $("#player_mark_end_time").attr("disabled", false);
+            $("#txtEndMark").attr("disabled", false);
+        });
+
+        $("#txtStartMark").live("keyup", function() {
+            txtStartMarkVal = $('#txtStartMark').val();
+            if (txtStartMarkVal != "") {
+                $("#player_mark_end_time").attr("disabled", false);
+                $("#txtEndMark").attr("disabled", false);
+            } else {
+                $("#player_mark_end_time").attr("disabled", true);
+                $("#txtEndMark").attr("disabled", true);
+            }
+        });
+
+        $("#player_mark_end_time").live("click", function() {
+            $("#txtEndMark").attr("value", player.getTime());
+            start = $('#txtStartMark').val();
+            end = $('#txtEndMark').val();
+            processClip(start, end);
+        });
+
+        $("#txtEndMark").live("keyup", function() {
+            start = $('#txtStartMark').val();
+            end = $('#txtEndMark').val();
+            processClip(start, end);
+        });
+
+        function processClip(start, end) {
+            uri = player.getClip().url + "#";
+            if (start != "" && end != "") {
+                //Use Normal Play Time as described in http://www.ietf.org/rfc/rfc2326.txt
+                uri += "t=npt:";
+                if (start != "" && start > 0) {
+                    uri += start + "s"
+                    if (player.getClip().duration < start) {
+                        //warning += "<li>The requested start-point is greater than the video's duration.</li>";
+                    }
+                }
+                if (end != "") {
+                    uri += "," + end + "s";
+                    if (player.getClip().duration < end) {
+                        //warning += "<li>The requested end-point is greater than the video's duration.</li>";
+                    }
+                }
+            }
+            $(".video-results-list").attr("rel", uri);
+        }
+
+        $(".player_clear_fragment").live("click", function() {
+            $("#txtStartMark").attr("value", "");
+            $("#txtEndMark").attr("value", "");
+            $("#media_clip").attr("rel", "");
+            if (player.getClip()) {
+                player.pause();
+                player.getClip().update({duration:player.getClip().fullDuration});
+            }
+        });
+
+        $("#player_play_fragment").live("click", function() {
+            player.pause();
+            player.seek($('#txtStartMark').val());
+            player.getClip().update({duration:$('#txtEndMark').val()});
+            player.play();
+        });
+
+        $(".player_play_clip").live("click", function() {
+            player.pause();
+            var startTime = $(this).siblings(".startTime").text().replace("s", "");
+            var endTime = $(this).siblings(".endTime").text().replace("s", "");
+            player.seek(startTime);
+            player.getClip().update({duration:endTime});
+            player.play();
+            $(".player_reset").removeAttr("disabled");
+        });
+
+        $(".player_reset").click(function() {
+            if (player.getClip()) {
+                player.pause();
+                player.getClip().update({duration:player.getClip().fullDuration});
+                player.seek(0);
+                $(this).attr("disabled", "disabled");
+            }
+        });
+    } else {
+        $(".player_reset").hide();
+    }
+    #end
+  try{
+    var head=$("html>head");
+    if(head.find("title").size()==0){
+      head.append("<title/>");
+      #set($valueList = $metadata.getList('dc_title'))
+      #set($title = $self.escape($valueList.get(0)))
+      head.find("title").text("$title");
+    }
+  }catch(e){}
+});
+</script>
+#end
