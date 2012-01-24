@@ -16,17 +16,17 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package au.edu.usq.fascinator.media.relay;
+package com.googlecode.mediarepository;
 
-import au.edu.usq.fascinator.api.harvester.HarvesterException;
-import au.edu.usq.fascinator.api.storage.DigitalObject;
-import au.edu.usq.fascinator.api.storage.Payload;
-import au.edu.usq.fascinator.api.storage.PayloadType;
-import au.edu.usq.fascinator.api.storage.Storage;
-import au.edu.usq.fascinator.api.storage.StorageException;
-import au.edu.usq.fascinator.common.harvester.impl.GenericHarvester;
-import au.edu.usq.fascinator.common.sax.SafeSAXReader;
-import au.edu.usq.fascinator.common.storage.StorageUtils;
+import com.googlecode.fascinator.api.harvester.HarvesterException;
+import com.googlecode.fascinator.api.storage.DigitalObject;
+import com.googlecode.fascinator.api.storage.Payload;
+import com.googlecode.fascinator.api.storage.PayloadType;
+import com.googlecode.fascinator.api.storage.Storage;
+import com.googlecode.fascinator.api.storage.StorageException;
+import com.googlecode.fascinator.common.harvester.impl.GenericHarvester;
+import com.googlecode.fascinator.common.sax.SafeSAXReader;
+import com.googlecode.fascinator.common.storage.StorageUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -55,9 +55,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Harvests publish Camtasia Relay outputs from a specified location on disk.
- * 
+ *
  * An stripped down adaptation on the core Fascinator's FileSystem Harvester.
- * 
+ *
  * @author Greg Pendlebury
  */
 public class RelayHarvester extends GenericHarvester {
@@ -129,7 +129,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Initialisation of harvester plugin
-     * 
+     *
      * @throws HarvesterException if fails to initialise
      */
     @Override
@@ -188,7 +188,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Get the next file due to be harvested
-     * 
+     *
      * @return The next file to harvest, null if none
      */
     private File getNextFile() {
@@ -203,7 +203,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Shutdown the plugin
-     * 
+     *
      * @throws HarvesterException is there are errors
      */
     @Override
@@ -212,7 +212,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Harvest the next set of files, and return their Object IDs
-     * 
+     *
      * @return Set<String> The set of object IDs just harvested
      * @throws HarvesterException is there are errors
      */
@@ -247,7 +247,7 @@ public class RelayHarvester extends GenericHarvester {
     /**
      * Test the last modified date on the file, and compare to the configured
      * 'waitTime' setting.
-     * 
+     *
      * @param file: The file to test
      * @return boolean: True if the file is 'old' enough to harvest, False
      * otherwise
@@ -264,7 +264,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Harvest a file based on configuration
-     * 
+     *
      * @param list The set of harvested IDs to add to
      * @param file The file to harvest
      * @throws HarvesterException is there are errors
@@ -395,7 +395,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Archive an 'extra' files if settings dictate, otherwise just delete it.
-     * 
+     *
      * @param file: The file to archive
      */
     private void archiveExtra(String oid, File file) {
@@ -407,7 +407,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Archive an 'core' files if settings dictate, otherwise just delete it.
-     * 
+     *
      * @param file: The file to archive
      */
     private void archiveFile(String oid, File file) {
@@ -419,7 +419,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Archive any file
-     * 
+     *
      * @param file: The file to archive
      */
     private void archiveNow(String oid, File file) {
@@ -441,7 +441,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Check if there are more objects to harvest
-     * 
+     *
      * @return <code>true</code> if there are more, <code>false</code> otherwise
      */
     @Override
@@ -452,7 +452,7 @@ public class RelayHarvester extends GenericHarvester {
     /**
      * Delete cached references to files which no longer exist and return the
      * set of IDs to delete from the system.
-     * 
+     *
      * @return Set<String> The set of object IDs deleted
      * @throws HarvesterException is there are errors
      */
@@ -463,7 +463,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Check if there are more objects to delete
-     * 
+     *
      * @return <code>true</code> if there are more, <code>false</code> otherwise
      */
     @Override
@@ -473,7 +473,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Create digital object
-     * 
+     *
      * @param harvestData A map of all the data required for a harvest
      * @return object id of created digital object
      * @throws HarvesterException if fail to create the object
@@ -536,7 +536,7 @@ public class RelayHarvester extends GenericHarvester {
 
     /**
      * Store a file as a payload on the given object.
-     * 
+     *
      * @param object: The DigitalObject to store the file inside
      * @param pid: The payload ID to use
      * @param file: The file to store
