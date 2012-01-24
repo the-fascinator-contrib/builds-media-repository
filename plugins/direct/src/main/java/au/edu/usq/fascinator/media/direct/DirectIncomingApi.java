@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package au.edu.usq.fascinator.media.direct;
+package com.googlecode.mediarepository;
 
 import java.io.IOException;
 
@@ -34,16 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import au.edu.usq.fascinator.common.GenericListener;
-import au.edu.usq.fascinator.common.JsonSimple;
-import au.edu.usq.fascinator.common.JsonSimpleConfig;
+import com.googlecode.fascinator.common.messaging.GenericListener;
+import com.googlecode.fascinator.common.JsonSimple;
+import com.googlecode.fascinator.common.JsonSimpleConfig;
 
 /**
  * An external facing object of the DirectMessageService. This class is solely
  * designed to function as a stable API, allowing us to redesign internal
  * messaging systems if we decide to at a a later date, without breaking API
  * 'contracts'.
- * 
+ *
  * @author Greg Pendlebury
  */
 public class DirectIncomingApi implements GenericListener {
@@ -83,7 +83,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Constructor required by ServiceLoader. Be sure to use init()
-     * 
+     *
      */
     public DirectIncomingApi() {
         thread = new Thread(this, LISTENER_ID);
@@ -91,7 +91,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Start thread running
-     * 
+     *
      */
     @Override
     public void run() {
@@ -125,7 +125,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Initialization method
-     * 
+     *
      * @param config Configuration to use
      * @throws IOException if the configuration file not found
      */
@@ -137,7 +137,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Return the ID string for this listener
-     * 
+     *
      * @returns String ID of this class.
      */
     @Override
@@ -147,7 +147,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Start the message listener
-     * 
+     *
      * @throws Exception if an error occurred starting the JMS connection
      */
     @Override
@@ -157,9 +157,9 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Stop the listener.
-     * 
+     *
      * @throws Exception if an error occurred stopping the JMS connection
-     * 
+     *
      */
     @Override
     public void stop() throws Exception {
@@ -197,7 +197,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Callback function for incoming messages.
-     * 
+     *
      * @param message The incoming message
      */
     @Override
@@ -227,7 +227,7 @@ public class DirectIncomingApi implements GenericListener {
 
     /**
      * Sets the priority level for the thread. Used by the OS.
-     * 
+     *
      * @param newPriority The priority level to set the thread at
      */
     @Override

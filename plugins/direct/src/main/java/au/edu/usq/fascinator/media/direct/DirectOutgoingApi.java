@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package au.edu.usq.fascinator.media.direct;
+package com.googlecode.mediarepository;
 
 import java.io.IOException;
 
@@ -34,14 +34,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import au.edu.usq.fascinator.common.GenericListener;
-import au.edu.usq.fascinator.common.JsonSimple;
-import au.edu.usq.fascinator.common.JsonSimpleConfig;
+import com.googlecode.fascinator.common.messaging.GenericListener;
+import com.googlecode.fascinator.common.JsonSimple;
+import com.googlecode.fascinator.common.JsonSimpleConfig;
 
 /**
  * A queue that 'publishes' new items to DiReCt. A polling script on the DiReCt
  * server will check for new content periodically.
- * 
+ *
  * @author Greg Pendlebury
  */
 public class DirectOutgoingApi implements GenericListener {
@@ -81,7 +81,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Constructor required by ServiceLoader. Be sure to use init()
-     * 
+     *
      */
     public DirectOutgoingApi() {
         thread = new Thread(this, LISTENER_ID);
@@ -89,7 +89,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Start thread running
-     * 
+     *
      */
     @Override
     public void run() {
@@ -123,7 +123,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Initialization method
-     * 
+     *
      * @param config Configuration to use
      * @throws IOException if the configuration file not found
      */
@@ -135,7 +135,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Return the ID string for this listener
-     * 
+     *
      * @returns String ID of this class.
      */
     @Override
@@ -145,7 +145,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Start the message listener
-     * 
+     *
      * @throws Exception if an error occurred starting the JMS connection
      */
     @Override
@@ -155,9 +155,9 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Stop the listener.
-     * 
+     *
      * @throws Exception if an error occurred stopping the JMS connection
-     * 
+     *
      */
     @Override
     public void stop() throws Exception {
@@ -195,7 +195,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Callback function for incoming messages.
-     * 
+     *
      * @param message The incoming message
      */
     @Override
@@ -218,7 +218,7 @@ public class DirectOutgoingApi implements GenericListener {
 
     /**
      * Sets the priority level for the thread. Used by the OS.
-     * 
+     *
      * @param newPriority The priority level to set the thread at
      */
     @Override

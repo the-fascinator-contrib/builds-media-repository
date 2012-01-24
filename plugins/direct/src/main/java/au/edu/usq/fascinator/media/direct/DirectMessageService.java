@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package au.edu.usq.fascinator.media.direct;
+package com.googlecode.mediarepository;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -37,26 +37,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import au.edu.usq.fascinator.api.PluginException;
-import au.edu.usq.fascinator.api.PluginManager;
-import au.edu.usq.fascinator.api.access.AccessControlException;
-import au.edu.usq.fascinator.api.access.AccessControlManager;
-import au.edu.usq.fascinator.api.access.AccessControlSchema;
-import au.edu.usq.fascinator.api.indexer.Indexer;
-import au.edu.usq.fascinator.api.indexer.IndexerException;
-import au.edu.usq.fascinator.api.storage.DigitalObject;
-import au.edu.usq.fascinator.api.storage.Payload;
-import au.edu.usq.fascinator.api.storage.Storage;
-import au.edu.usq.fascinator.api.storage.StorageException;
-import au.edu.usq.fascinator.common.GenericListener;
-import au.edu.usq.fascinator.common.JsonSimple;
-import au.edu.usq.fascinator.common.JsonSimpleConfig;
-import au.edu.usq.fascinator.common.storage.StorageUtils;
+import com.googlecode.fascinator.api.PluginException;
+import com.googlecode.fascinator.api.PluginManager;
+import com.googlecode.fascinator.api.access.AccessControlException;
+import com.googlecode.fascinator.api.access.AccessControlManager;
+import com.googlecode.fascinator.api.access.AccessControlSchema;
+import com.googlecode.fascinator.api.indexer.Indexer;
+import com.googlecode.fascinator.api.indexer.IndexerException;
+import com.googlecode.fascinator.api.storage.DigitalObject;
+import com.googlecode.fascinator.api.storage.Payload;
+import com.googlecode.fascinator.api.storage.Storage;
+import com.googlecode.fascinator.api.storage.StorageException;
+import com.googlecode.fascinator.common.messaging.GenericListener;
+import com.googlecode.fascinator.common.JsonSimple;
+import com.googlecode.fascinator.common.JsonSimpleConfig;
+import com.googlecode.fascinator.common.storage.StorageUtils;
 
 /**
  * A message processing class for both incoming and outgoing messages to the
  * DiReCt server. Messaging framework adapted from the RenderQueueConsumer.
- * 
+ *
  * @author Greg Pendlebury
  */
 public class DirectMessageService implements GenericListener {
@@ -105,7 +105,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Constructor required by ServiceLoader. Be sure to use init()
-     * 
+     *
      */
     public DirectMessageService() {
         thread = new Thread(this, LISTENER_ID);
@@ -113,7 +113,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Start thread running
-     * 
+     *
      */
     @Override
     public void run() {
@@ -147,7 +147,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Initialization method
-     * 
+     *
      * @param config Configuration to use
      * @throws IOException if the configuration file not found
      */
@@ -182,7 +182,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Return the ID string for this listener
-     * 
+     *
      * @returns String ID of this class.
      */
     @Override
@@ -192,7 +192,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Start the message listener
-     * 
+     *
      * @throws Exception if an error occurred starting the JMS connection
      */
     @Override
@@ -263,7 +263,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Callback function for incoming messages.
-     * 
+     *
      * @param message The incoming message
      */
     @Override
@@ -302,7 +302,7 @@ public class DirectMessageService implements GenericListener {
     /**
      * Prepare a message string to send to DiReCt. Maps internal data fields to
      * the agreed formats for DiReCt.
-     * 
+     *
      * @param incoming The incoming message as a parsed JSON object
      * @return String The text of the outgoing message.
      * @throws IOException
@@ -380,7 +380,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Process and act on messages sent from DiReCt.
-     * 
+     *
      * @param incoming The incoming message as a parsed JSON object
      * @return true if processing was successful, false otherwise
      */
@@ -470,7 +470,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Method to segregate all security logic from main processing routine.
-     * 
+     *
      * @param incoming The incoming message as a parsed JSON object
      * @param oid The OID of our object
      */
@@ -494,7 +494,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Remove an old security schema from the database.
-     * 
+     *
      * @param schema The old security schema to remove.
      */
     private void removeSecurity(AccessControlSchema schema) {
@@ -508,7 +508,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Create a new security schema in the database.
-     * 
+     *
      * @param security The new security data to use.
      * @param oid The OID of our object
      */
@@ -544,9 +544,9 @@ public class DirectMessageService implements GenericListener {
     /**
      * A reasonably simple mapping between the flag values used by DiReCt and
      * the security database.
-     * 
+     *
      * "on" => "1" "off" => "0"
-     * 
+     *
      * @param data The new security data to query.
      * @param field The field to check
      */
@@ -566,7 +566,7 @@ public class DirectMessageService implements GenericListener {
 
     /**
      * Sets the priority level for the thread. Used by the OS.
-     * 
+     *
      * @param newPriority The priority level to set the thread at
      */
     @Override
