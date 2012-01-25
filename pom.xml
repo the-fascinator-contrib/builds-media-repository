@@ -18,6 +18,10 @@
         <dir.server>${project.home}/server</dir.server>
         <dir.solr>${project.home}/solr</dir.solr>
         <dir.storage>${project.home}/storage</dir.storage>
+        <amq.port>61616</amq.port>
+        <amq.stomp.port>61613</amq.stomp.port>
+        <smtp.host>localhost</smtp.host>
+        <admin.email>admin@localhost</admin.email>
     </properties>
     <modules>
         <module>parent</module>

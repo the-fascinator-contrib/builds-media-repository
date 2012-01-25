@@ -1,4 +1,10 @@
 @echo off
+
+set AMQ_PORT=${amq.port}
+set AMQ_STOMP_PORT=${amq.stomp.port}
+set SMTP_HOST=${smtp.host}
+set ADMIN_EMAIL=${admin.email}
+
 REM this script sets the environment for the fascinator scripts
 set FASCINATOR_HOME=${dir.home}
 set CLASSPATH=plugins/*;lib/*
@@ -51,4 +57,7 @@ set CONFIG_DIRS=-Dfascinator.home="%FASCINATOR_HOME%" -Dportal.home="${dir.porta
 REM server details
 set SERVER_INFO=-Dserver.address="${server.address}" -Dserver.ip="${server.ip}"
 
-set JAVA_OPTS=%JVM_OPTS% %SOLR_OPTS% %PROXY_OPTS% %JETTY_OPTS% %CONFIG_DIRS% %SERVER_INFO%
+REM additional settings
+set EXTRA_OPTS=-Damq.port=%AMQ_PORT% -Damq.stomp.port=%AMQ_STOMP_PORT% -Dsmtp.host="%SMTP_HOST%" -Dadmin.email="%ADMIN_EMAIL%"
+
+set JAVA_OPTS=%JVM_OPTS% %SOLR_OPTS% %PROXY_OPTS% %JETTY_OPTS% %CONFIG_DIRS% %SERVER_INFO% %EXTRA_OPTS%

@@ -35,20 +35,20 @@
   <root level="INFO">
     <appender-ref ref="SIFT" />
   </root>
-  <logger name="au.edu.usq" level="DEBUG" />
-  <logger name="au.edu.usq.fascinator.BackupClient" level="INFO">
+  <logger name="com.googlecode" level="DEBUG" />
+  <logger name="com.googlecode.fascinator.BackupClient" level="INFO">
     <appender-ref ref="CYCLIC" />
   </logger>
-  <logger name="au.edu.usq.fascinator.HarvestClient" level="INFO">
+  <logger name="com.googlecode.fascinator.HarvestClient" level="INFO">
     <appender-ref ref="CYCLIC" />
   </logger>
-  <logger name="au.edu.usq.fascinator.HarvestQueueConsumer" level="INFO">
+  <logger name="com.googlecode.fascinator.HarvestQueueConsumer" level="INFO">
     <appender-ref ref="CYCLIC" />
   </logger>
-  <logger name="au.edu.usq.fascinator.RenderQueueConsumer" level="INFO">
+  <logger name="com.googlecode.fascinator.RenderQueueConsumer" level="INFO">
     <appender-ref ref="CYCLIC" />
   </logger>
-  <logger name="au.edu.usq.fascinator.portal.HouseKeeper" level="DEBUG">
+  <logger name="com.googlecode.fascinator.portal.HouseKeeper" level="DEBUG">
     <appender-ref ref="CYCLIC" />
   </logger>
 </configuration>

@@ -1,29 +1,21 @@
 {
-    "version": "0.7.17",
+    "version": "1.0.5.3",
     "configured": true,
     "urlBase" : "http://${server.address}/media/",
-    "email" : "adfi_dev@usq.edu.au",
+    "email" : "DO_NOT_CHANGE",
     "sso": {
-        "plugins": ["USQSSO"],
+        "plugins": ["OpenID"],
         "urlExclusions": {
             "startsWith" : ["css/", "feed/", "images/", "js/", "flowplayer/", "mediaplayer/"],
             "endsWith" : [".ico"],
             "equals" : ["css"]
         },
         "trustTokens": {
-            "iceExport" : {
-                "publicKey": "iceExport",
-                "privateKey": "1234SECRET4321",
-                "expiry": "600"
-            }
         }
     },
     "accesscontrol": {
-        "type" : "derby,course",
+        "type" : "derby",
         "derby" : {
-            "derbyHome" : "${fascinator.home}/database"
-        },
-        "course" : {
             "derbyHome" : "${fascinator.home}/database"
         }
     },
@@ -34,28 +26,29 @@
         }
     },
     "roles": {
-        "type": "internal,moodle,direct",
-        "direct": {
-            "server" : "http://coursereadings.usq.edu.au"
-        },
+        "type": "internal",
         "internal": {
             "path": "${fascinator.home}/security/roles.properties"
-        },
-        "moodle": {
-            "derbyHome" : "${fascinator.home}/database"
         }
     },
     "storage": {
         "type": "file-system",
         "file-system": {
             "home": "${storage.home}"
-        },
-        "ignoreFilter": ".svn|.ice|.*|~*"
+        }
     },
     "messaging" : {
-        "url" : "tcp://${server.ip}:61616",
-        "stompUrl" : "stomp://${server.ip}:61613",
+        "url" : "tcp://localhost:${amq.port}",
+        "stompUrl" : "stomp://localhost:${amq.stomp.port}",
         "home" : "${fascinator.home}/activemq-data",
+        "startup": {
+            "delay": "5000",
+            "timer": "15000"
+        },
+        "statistics": {
+            "enabled": true,
+            "destination": "houseKeeping"
+        },
         "threads" : [
             {
                 "id" : "render",
@@ -106,14 +99,12 @@
                 }
             },
             {
-                "id" : "subscriber",
-                "description" : "Subscriber queue for event log.",
+                "id": "subscriber",
+                "description": "Subscriber queue for event log.",
                 "priority": "7",
                 "config": {
-                    "name" : "subscriber",
-                    "subscribers": [
-                        "solr-event-log"
-                    ]
+                    "name": "subscriber",
+                    "subscribers": ["solr-event-log"]
                 }
             },
             {
@@ -125,30 +116,6 @@
                 }
             },
             {
-                "id" : "DirectMessageService",
-                "description" : "Central queue for processing/controlling DiReCt integration.",
-                "priority" : "5",
-                "config" : {
-                    "name" : "DirectMessageService"
-                }
-            },
-            {
-                "id" : "DirectOutgoingApi",
-                "description" : "API for DiReCt's access to discover new items waiting for its attention.",
-                "priority" : "5",
-                "config" : {
-                    "name" : "DirectOutgoingApi"
-                }
-            },
-            {
-                "id" : "DirectIncomingApi",
-                "description" : "API for DiReCt to post responses to in notifying the media repository.",
-                "priority" : "5",
-                "config" : {
-                    "name" : "DirectIncomingApi"
-                }
-            },
-            {
                 "id" : "emailnotification",
                 "description" : "Queue to send email notifications",
                 "priority" : "8",
@@ -156,25 +123,16 @@
                     "name" : "emailnotification",
                     "debug" : false,
                     "from" : {
-                        "email" : "adfi_dev@usq.edu.au",
-                        "name": "Media Server Dev"
+                        "email" : "${admin.email}",
+                        "name": "Media Repository"
                     },
                     "smtp" : {
-                        "host" : "smtp-gw.usq.edu.au"
+                        "host" : "${smtp.host}"
                     },
                     "defaults" : {
-                        "subject" : "Media Server Notification !!DEV!!"
+                        "subject": "Media Repository Notification",
+                        "body": "Default email message"
                     }
-                }
-            }
-        ],
-        "deactivatedThreads" : [
-            {
-                "id" : "DirectTesting",
-                "description" : "TESING ONLY. This queue simulates DiReCt's role in the workflow.",
-                "priority" : "5",
-                "config" : {
-                    "name" : "DirectTesting"
                 }
             }
         ]
@@ -207,7 +165,7 @@
     "transformerDefaults": {
         "aperture": {
             "id": "aperture",
-            "outputPath": "${java.io.tmpdir}/${user.name}/ice2-output"
+            "outputPath": "${java.io.tmpdir}/${user.name}/aperture-output"
         },
         "ffmpeg": {
             "id": "ffmpeg",
@@ -457,6 +415,13 @@
         "derbyHome" : "${fascinator.home}/database-service"
     },
     "portal": {
+        "home": "${portal.home}",
+        "contentDir": "${portal.home}",
+        "defaultView": "default",
+        "skins": {
+            "default": "default",
+            "order": ["media"]
+        },
         "caching": {
             "caches": {
                 "scriptObjects": {
@@ -517,16 +482,15 @@
                 }
             }
         },
-        "home": "${portal.home}",
-        "contentDir": "${portal.home}",
-        "defaultView": "default",
-        "skins": {
-            "default": "default",
-            "order": ["media", "usq"]
-        },
         "cachingLevel": "dynamic",
         "layout": "layout",
         "nativeJython": true,
+        "packageTypes": {
+            "default": {
+                "jsonconfig": "packaging-config.json",
+                "packages-in-package": false
+            }
+        },
         "harvestFiles": "${fascinator.home}/harvest",
         "houseKeeping": {
             "config": {
@@ -560,7 +524,7 @@
         "path": "${fascinator.home}/watcher"
     },
     "subscriber": {
-        "solr": {
+        "solr-event-log": {
             "uri": "http://localhost:${jetty.port}/solr/eventlog",
             "coreName": "eventlog",
             "username": "admin",

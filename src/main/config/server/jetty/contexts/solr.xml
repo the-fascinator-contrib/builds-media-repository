@@ -5,5 +5,5 @@
     <Set name="war"><SystemProperty name="jetty.home" default="."/>/../webapps/solr.war</Set>
     <Set name="parentLoaderPriority">true</Set>
     <Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
-    <Set name="overrideDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/solrSecurity.xml</Set>
+    <!-- <Set name="overrideDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/solrSecurity.xml</Set>-->
 </Configure>
