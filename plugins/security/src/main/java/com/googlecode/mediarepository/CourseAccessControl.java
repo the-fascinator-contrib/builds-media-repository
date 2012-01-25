@@ -157,7 +157,7 @@ public class CourseAccessControl implements AccessControl {
      * @throws AuthenticationException if fails to initialize
      */
     private void setConfig(JsonSimple config) throws AccessControlException {
-        statements = new HashMap();
+        statements = new HashMap<String, PreparedStatement>();
         // Find our database home directory
         derbyHome = config.getString(null, "accesscontrol", "course", "derbyHome");
         if (derbyHome == null) {
@@ -287,7 +287,7 @@ public class CourseAccessControl implements AccessControl {
             throws AccessControlException {
         try {
             List<CourseSchema> currentList = selectSchemas(recordId);
-            List<AccessControlSchema> schemas = new ArrayList();
+            List<AccessControlSchema> schemas = new ArrayList<AccessControlSchema>();
             for (CourseSchema schema : currentList) {
                 schemas.add(schema);
             }
@@ -571,7 +571,7 @@ public class CourseAccessControl implements AccessControl {
 
     private List<CourseSchema> selectSchemas(String recordId)
             throws SQLException {
-        Map<String, CourseSchema> schemas = new HashMap();
+        Map<String, CourseSchema> schemas = new HashMap<String, CourseSchema>();
 
         // Prepare and execute
         PreparedStatement select = prepare("selectSchemas",
@@ -621,7 +621,7 @@ public class CourseAccessControl implements AccessControl {
         }
         close(result);
 
-        List<CourseSchema> response = new ArrayList();
+        List<CourseSchema> response = new ArrayList<CourseSchema>();
         for (CourseSchema schema : schemas.values()) {
             response.add(schema);
         }
@@ -694,7 +694,7 @@ public class CourseAccessControl implements AccessControl {
     }
 
     private List<String> selectRoles(String recordId) throws SQLException {
-        List<String> roles = new ArrayList();
+        List<String> roles = new ArrayList<String>();
         PreparedStatement select = prepare("selectRoles",
                 "SELECT DISTINCT role FROM " + ROLE_TABLE +
                 " WHERE recordId = ?");
@@ -708,9 +708,10 @@ public class CourseAccessControl implements AccessControl {
         return roles;
     }
 
-    private List<String> selectRoles(String recordId, int schemaId)
+    @SuppressWarnings("unused")
+	private List<String> selectRoles(String recordId, int schemaId)
             throws SQLException {
-        List<String> roles = new ArrayList();
+        List<String> roles = new ArrayList<String>();
         PreparedStatement select = prepare("selectSchemaRoles",
                 "SELECT * FROM " + ROLE_TABLE +
                 " WHERE recordId = ? AND schemaId = ?");

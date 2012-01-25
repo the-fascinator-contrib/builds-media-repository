@@ -33,7 +33,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -273,9 +272,9 @@ public class RelayHarvester extends GenericHarvester {
             throws HarvesterException {
         log.debug("=========================");
         log.debug("Harvesting file: '{}'", file.getAbsolutePath());
-        Map<String, Object> harvestData = new HashMap();
-        List<File> files = new ArrayList();
-        List<File> extras = new ArrayList();
+        Map<String, Object> harvestData = new HashMap<String, Object>();
+        List<File> files = new ArrayList<File>();
+        List<File> extras = new ArrayList<File>();
         files.add(file);
 
         // Split the filename into important parts
@@ -329,8 +328,10 @@ public class RelayHarvester extends GenericHarvester {
         String email = eNode.getText();
         // Check for additional outputs,
         //   sometimes the files will come in segments
-        List<Node> outputs = doc
+        @SuppressWarnings("unchecked")
+		List<Node> outputs = doc
                 .selectNodes("/presentation/outputFiles/fileList/file");
+
         for (Node node : outputs) {
             // Need an element object to get the attribute
             Element e = (Element) node;

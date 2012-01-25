@@ -148,8 +148,8 @@ public class DirectRoles implements Roles {
         }
 
         // Caching
-        cacheTimes = new HashMap();
-        cacheRoles = new HashMap();
+        cacheTimes = new HashMap<String, Long>();
+        cacheRoles = new HashMap<String, List<String>>();
     }
 
     /**
@@ -203,7 +203,7 @@ public class DirectRoles implements Roles {
         response = "{\"roles\": " + response + "}";
 
         // Parse response
-        List<String> roles = new ArrayList();
+        List<String> roles = new ArrayList<String>();
         try {
             JsonSimpleConfig data = new JsonSimpleConfig(response);
             for (String object : data.getStringList("roles")) {
@@ -215,7 +215,7 @@ public class DirectRoles implements Roles {
         }
 
         // Cache and return
-        cache(username, new HashSet(roles));
+        cache(username, new HashSet<String>(roles));
         return roles.toArray(new String[0]);
     }
 
@@ -251,7 +251,7 @@ public class DirectRoles implements Roles {
      */
     private void cache(String username, Set<String> roles) {
         // Turn our set into a list
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         for (String role : roles) {
             list.add(role);
         }

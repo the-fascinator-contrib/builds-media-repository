@@ -208,8 +208,8 @@ public class MoodleRoles implements Roles {
         reader = new SafeSAXReader();
 
         // Caching
-        cacheTimes = new HashMap();
-        cacheRoles = new HashMap();
+        cacheTimes = new HashMap<String, Long>();
+        cacheRoles = new HashMap<String, List<String>>();
 
         // Peoplesoft course pattern matching
         Pattern p = Pattern.compile("([A-Z]{3,5}[0-9]{4})_([0-9]{4})_([0-9])$");
@@ -361,10 +361,13 @@ public class MoodleRoles implements Roles {
         }
 
         // Parse response
-        Map<String, String> roles = new LinkedHashMap();
+        Map<String, String> roles = new LinkedHashMap<String, String>();
         try {
             Document doc = loadDocument(response);
-            List<Node> nodes = doc.selectNodes("//course");
+
+            @SuppressWarnings("unchecked")
+			List<Node> nodes = doc.selectNodes("//course");
+
             for (Node node : nodes) {
                 String id = node.selectSingleNode("./@id").getText();
                 String name = node.selectSingleNode("./fullname").getText();
@@ -411,7 +414,10 @@ public class MoodleRoles implements Roles {
         // Parse response and add to roles map
         try {
             Document doc = loadDocument(response);
-            List<Node> nodes = doc.selectNodes("//course");
+
+            @SuppressWarnings("unchecked")
+			List<Node> nodes = doc.selectNodes("//course");
+
             for (Node node : nodes) {
                 String id = node.selectSingleNode("./@id").getText();
                 String name = node.selectSingleNode("./fullname").getText();
@@ -469,7 +475,7 @@ public class MoodleRoles implements Roles {
      */
     private void cache(String username, Set<String> roles) {
         // Turn our set into a list
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         for (String role : roles) {
             list.add(role);
         }

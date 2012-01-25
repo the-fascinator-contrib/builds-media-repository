@@ -64,8 +64,6 @@ public class CourseAccessControlTest {
             year = "2010";
             semester = "S3";
             roles = "role";
-        } else {
-            throw new Exception("Could not read config from resources!");
         }
     }
 

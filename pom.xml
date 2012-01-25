@@ -62,7 +62,6 @@
         <dependency>
             <groupId>com.googlecode.the-fascinator</groupId>
             <artifactId>fascinator-common</artifactId>
-            <version>${fascinator.version}</version>
         </dependency>
         <!-- Solr Web App -->
         <dependency>
@@ -116,7 +115,6 @@
         <dependency>
             <groupId>com.googlecode.the-fascinator.plugins</groupId>
             <artifactId>plugin-indexer-solr</artifactId>
-            <version>${fascinator.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.the-fascinator.plugins</groupId>
@@ -126,7 +124,6 @@
         <dependency>
             <groupId>com.googlecode.the-fascinator.plugins</groupId>
             <artifactId>plugin-storage-filesystem</artifactId>
-            <version>${fascinator.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.the-fascinator.plugins</groupId>
