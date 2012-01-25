@@ -21,29 +21,8 @@
     </properties>
     <modules>
         <module>parent</module>
-        <module>plugins/direct</module>
-        <module>plugins/harvesters/relay</module>
-        <module>plugins/security</module>
     </modules>
     <dependencies>
-        <!-- Media Repository - DiReCt APIs -->
-        <dependency>
-            <groupId>com.googlecode.media-repository</groupId>
-            <artifactId>fascinator-media-direct</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- Media Repository - Relay Harvester -->
-        <dependency>
-            <groupId>com.googlecode.media-repository</groupId>
-            <artifactId>fascinator-media-relay</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- Media Repository - Security Plugins -->
-        <dependency>
-            <groupId>com.googlecode.media-repository</groupId>
-            <artifactId>fascinator-media-security</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- Fascinator Portal -->
         <dependency>
             <groupId>com.googlecode.the-fascinator</groupId>
@@ -124,6 +103,11 @@
         <dependency>
             <groupId>com.googlecode.the-fascinator.plugins</groupId>
             <artifactId>plugin-storage-filesystem</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.the-fascinator.plugins</groupId>
+            <artifactId>plugin-subscriber-solrEventLog</artifactId>
+            <version>${fascinator.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.the-fascinator.plugins</groupId>

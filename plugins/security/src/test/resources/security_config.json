@@ -1,8 +1,0 @@
-{
-    "accesscontrol": {
-        "type" : "course",
-        "course" : {
-            "derbyHome" : "${java.io.tmpdir}/course_unit_test"
-        }
-    }
-}
