@@ -3,6 +3,11 @@
 # this script sets the environment for other fascinator scripts
 #
 
+export AMQ_PORT="${amq.port}"
+export AMQ_STOMP_PORT="${amq.stomp.port}"
+export SMTP_HOST="${smtp.host}"
+export ADMIN_EMAIL="${admin.email}"
+
 # set fascinator home directory
 if [ -z "$TF_HOME" ]; then
 	export TF_HOME="${dir.home}"
@@ -55,5 +60,8 @@ CONFIG_DIRS="-Dfascinator.home=$TF_HOME -Dportal.home=${dir.portal} -Dstorage.ho
 # server details
 SERVER_INFO="-Dserver.address=${server.address} -Dserver.ip=${server.ip}"
 
+# additional settings
+EXTRA_OPTS="-Damq.port=$AMQ_PORT -Damq.stomp.port=$AMQ_STOMP_PORT -Dsmtp.host=$SMTP_HOST -Dadmin.email=$ADMIN_EMAIL"
+
 # set options for maven to use
-export JAVA_OPTS="$JVM_OPTS $JETTY_OPTS $SOLR_OPTS $PROXY_OPTS $CONFIG_DIRS $SERVER_INFO"
+export JAVA_OPTS="$JVM_OPTS $JETTY_OPTS $SOLR_OPTS $PROXY_OPTS $CONFIG_DIRS $SERVER_INFO $EXTRA_OPTS"
