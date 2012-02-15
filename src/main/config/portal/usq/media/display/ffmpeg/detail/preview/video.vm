@@ -32,7 +32,7 @@
                 <!-- Don't remove this comment, it fixes display order of annotations -->
             </div>
         </div>
-        #if ($page.authentication.has_role("STAFF") || $page.authentication.has_role("ALLSTAFF"))
+        #if ($page.authentication.is_admin() || $page.authentication.has_role("STAFF") || $page.authentication.has_role("ALLSTAFF"))
         <b>USQ Staff Member:</b>
         <p>If you wish to make this video available to your students choose from one of the options below:</p>
         <table class="staffLinks">
