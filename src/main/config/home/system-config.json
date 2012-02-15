@@ -393,6 +393,12 @@
         }
     },
     "uploader": {
+        "classicUpload": {
+            "screen-label": "Fascinator Default",
+            "security": ["registered", "metadata", "editor", "admin"],
+            "upload-path": "${fascinator.home}/uploads/workflow-harvester",
+            "json-config": "${fascinator.home}/harvest/workflows/workflow-harvester.json"
+        },
         "workflow2": {
             "screen-label": "USQ Copyright Materials",
             "security": ["ALLSTAFF", "admin"],
